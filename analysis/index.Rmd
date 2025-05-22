@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: "HumanHeartCarTrans2"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -8,4 +8,22 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+### Merge-QC-UMAPS. 
+merge QC and display umaps
+[link](Merge-QC-UMAPS.html)
+
+### MarkerGenes. 
+Calculate and plot marker and DE genes
+[link](Marker_Genes.html)
+
+### Abundances. 
+Relative abundance
+[link](Abundances.html)
+
+### BMP_HGF. 
+Expression of BMP and HGF signaling genes
+[link](BMP_HGF.html)
+
+### Fb high resolution
+Fb
+[link](Fbhighres.html)

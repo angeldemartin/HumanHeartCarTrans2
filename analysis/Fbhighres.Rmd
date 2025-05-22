@@ -1,0 +1,179 @@
+---
+title: "Fbhighres"
+author: "A.DeMartin"
+date: "2025-04-16"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load object
+```{r load merged object, eval=FALSE, include=FALSE}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
+seuratM <- readRDS(fileNam)
+```
+
+## set color vectors 
+```{r set color vector}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## subset Fb, PerivFb, VSMC
+```{r subset Fb PerivFb VSMC, eval=FALSE, include=TRUE}
+Idents(seuratM) <- seuratM$clusterName
+seuratAllFb <- subset(seuratM, idents = c("Fb1", "Fb2", "Fb3", "PerivFb1", "PerivFb2", "VSMC"))
+levels(seuratAllFb)
+table(seuratAllFb$orig.ident)
+table(seuratAllFb$clusterName)
+DimPlot(seuratAllFb, reduction = "umap", cols = colclusterName)
+remove(seuratM)
+```
+
+## rerun seurat
+```{r rerun seuratAllFb, eval=FALSE, include=TRUE}
+##recreate assay 
+seuratAllFb@assays$RNA@layers$data = NULL
+seuratAllFb@assays$RNA@layers$scale.data = NULL
+counts = GetAssayData(seuratAllFb, assay = "RNA", layer = "counts")
+seuratAllFb[["RNA"]] = CreateAssayObject(counts = counts)
+
+##rerun seurat
+seuratAllFb <- NormalizeData (object = seuratAllFb)
+seuratAllFb <- FindVariableFeatures(object = seuratAllFb)
+seuratAllFb <- ScaleData(object = seuratAllFb, verbose = TRUE)
+seuratAllFb <- RunPCA(object=seuratAllFb, npcs = 30, verbose = FALSE)
+seuratAllFb <- RunTSNE(object=seuratAllFb, reduction="pca", dims = 1:20)
+seuratAllFb <- RunUMAP(object=seuratAllFb, reduction="pca", dims = 1:20)
+seuratAllFb <- FindNeighbors(object = seuratAllFb, reduction = "pca", dims= 1:20)
+
+res <- c(0.25, 0.6, 0.8, 0.4)
+for (i in 1:length(res)) {
+  seuratAllFb <- FindClusters(object = seuratAllFb, resolution = res[i], random.seed = 1234)
+}
+
+table(seuratAllFb$orig.ident)
+table(seuratAllFb$RNA_snn_res.0.25)
+```
+
+
+
+## load file AllFb
+```{r load file AllFb}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds"
+seuratAllFb <- readRDS(fileNam)
+table(seuratAllFb$dataset)
+table(seuratAllFb$RNA_snn_res.0.25)
+table(seuratAllFb$orig.ident)
+```
+
+```{r assign cluter, include=TRUE, eval=FALSE}
+#### cluster_name_Fb
+seuratAllFb$clusterNameAllFb <- "clusterNameAllFb"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "0" )] <- "Fb1"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "1" )] <- "PerivFb1"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "2" )] <- "Fb2"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "3" )] <- "Fb3"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "4" )] <- "VSMC"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "5" )] <- "Fb4"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "6" )] <- "PerivFb2"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "7" )] <- "PerivFb3"
+
+table(seuratAllFb$clusterNameAllFb)
+table(seuratAllFb$RNA_snn_res.0.25)
+
+###order
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+seuratAllFb$clusterNameAllFb <- factor(seuratAllFb$clusterNameAllFb, levels=c("Fb1", "Fb2", "Fb3", "Fb4", "PerivFb1", "PerivFb2", "PerivFb3", "VSMC"))
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+table(seuratAllFb$clusterNameAllFb)
+```
+
+```{r save merged seurat object, eval=FALSE, include=TRUE}
+### save seurat object
+saveRDS(seuratAllFb, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds")
+```
+
+##set color vectors AllFb
+```{r set color vector AllFb}
+colAllFb <- c("#D53E4F","#f4a582","#ff7b7b","#8e0b00","#FEE08B","#42090D","#FF7B00","#FFF4DF")
+names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5")
+```
+
+## umaps
+```{r umaps}
+Idents(seuratAllFb) <- seuratAllFb$RNA_snn_res.0.25
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, label = TRUE)
+
+Idents(seuratAllFb) <- seuratAllFb$clusterName
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colclusterName, label = TRUE)
+
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label = TRUE)
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb)  + theme(legend.position = "null")
+
+Idents(seuratAllFb) <- seuratAllFb$diseaseCond
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond)
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond) + theme(legend.position = "null")
+```
+## calculate cluster marker genes
+```{r cluster marker genes, include=TRUE, eval=FALSE}
+##cluster marker
+Idents(seuratAllFb) <- seuratAllFb$RNA_snn_res.0.25
+markerGenes <- FindAllMarkers(seuratAllFb, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+
+#save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/analysis/markerGenesAllFbRNA_snn_res.0.25",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+```
+
+## session info
+```{r date and session info}
+date()
+sessionInfo()
+```

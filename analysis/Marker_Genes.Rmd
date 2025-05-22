@@ -1,0 +1,177 @@
+---
+title: "Marker_Genes"
+author: "A.DeMartin"
+date: "2025-03-26"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+# load object and calculate marker genes
+## load object
+
+```{r load merged object}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
+seuratM <- readRDS(fileNam)
+```
+
+##set color vectors 
+```{r set color vector}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","grey")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell", "Mph3")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## calculate cluster marker genes
+```{r marker RNA_snn_res.0.4, include=TRUE, eval=FALSE}
+##cluster marker
+Idents(seuratM) <- seuratM$RNA_snn_res.0.4
+markerGenes <- FindAllMarkers(seuratM, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+#save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/analysis/markerGenesRNA_snn_res.0.4",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+```
+
+# plot marker genes
+
+## dotplot marker genes
+```{r dotplot marker genes, fig.height=8, fig.width=10}
+seuratM$clusterName <- factor(seuratM$clusterName, levels=c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Mph3","Tcell1","Tcell2","Mastcell"))
+Idents(seuratM) <-seuratM$clusterName
+levels(seuratM)
+
+genes <- data.frame(gene=rownames(seuratM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=rev(c("TTN", "MYBPC3", "RYR2", "NEBL", "TNNT2", "CMYA5", "COL6A3", "DCN",  "FBN1", "C7", "PDGFRA", "CDH19", "PDGFRB","ITGA7","RGS5", "NOTCH3", "MYH11", "ACTA2","PECAM1", "VWF", "EGFL7", "POSTN", "ITGA10", "CDH11","CCL21", "PROX1", "FLT4", "NRXN1", "ANK3", "PTPRZ1", "ASIC2", "PIEZO2", "MTHFD1L", "ACACB", "PLIN1", "GPAM", "CD163", "MRC1", "SIGLEC1", "STAB1", "CSF1R", "MERTK", "IL7R", "PTPRC", "CD2", "KIT", "CPA3", "IL18R1"))) %>% left_join(., genes, by="geneID") %>% filter(gene != "ENSG00000232995.RGS5") 
+
+DotPlot(seuratM, features = selGenes, group.by= "clusterName") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
+## average heatmap marker genes
+```{r avg heatmap, fig.height=10, fig.width=8}
+Idents(seuratM) <- seuratM$clusterName
+levels(seuratM)
+
+seurat <- seuratM
+
+avgHeatmap <- function(seurat, selGenes, colVecIdent, colVecCond=NULL,
+                       ordVec=NULL, gapVecR=NULL, gapVecC=NULL,cc=FALSE,
+                       cr=FALSE, condCol=FALSE){
+  selGenes <- selGenes$gene
+  ## assay data
+  clusterAssigned <- as.data.frame(Idents(seurat)) %>%
+  dplyr::mutate(cell=rownames(.))
+  colnames(clusterAssigned)[1] <- "ident"
+  seuratDat <- GetAssayData(seurat)
+  
+  ## genes of interest
+  genes <- data.frame(gene=rownames(seurat)) %>% 
+    mutate(geneID=gsub("^.*\\.", "", gene)) %>% filter(geneID %in% selGenes)
+
+  ## matrix with averaged cnts per ident
+  logNormExpres <- as.data.frame(t(as.matrix(
+    seuratDat[which(rownames(seuratDat) %in% genes$gene),])))
+  logNormExpres <- logNormExpres %>% dplyr::mutate(cell=rownames(.)) %>%
+    dplyr::left_join(.,clusterAssigned, by=c("cell")) %>%
+    dplyr::select(-cell) %>% dplyr::group_by(ident) %>%
+    dplyr::summarise_all(mean)
+  logNormExpresMa <- logNormExpres %>% dplyr::select(-ident) %>% as.matrix()
+  rownames(logNormExpresMa) <- logNormExpres$ident
+  logNormExpresMa <- t(logNormExpresMa)
+  rownames(logNormExpresMa) <- gsub("^.*?\\.","",rownames(logNormExpresMa))
+  
+  ## remove genes if they are all the same in all groups
+  ind <- apply(logNormExpresMa, 1, sd) == 0
+  logNormExpresMa <- logNormExpresMa[!ind,]
+  genes <- genes[!ind,]
+
+  ## color columns according to cluster
+  annotation_col <- as.data.frame(gsub("(^.*?_)","",
+                                       colnames(logNormExpresMa)))%>%
+    dplyr::mutate(celltype=gsub("(_.*$)","",colnames(logNormExpresMa)))
+  colnames(annotation_col)[1] <- "col1"
+  annotation_col <- annotation_col %>%
+    dplyr::mutate(cond = gsub("(^[0-9]_?)","",col1)) %>%
+    dplyr::select(cond, celltype)
+  rownames(annotation_col) <- colnames(logNormExpresMa) 
+
+  ann_colors = list(
+      celltype=colVec)
+  if(is.null(ann_colors$cond)){
+    annotation_col$cond <- NULL
+  }
+  
+  ## adjust order
+  logNormExpresMa <- logNormExpresMa[selGenes,]
+  if(is.null(ordVec)){
+  ordVec <- levels(seurat)
+  ordVec <-c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
+  }
+  logNormExpresMa <- logNormExpresMa[,ordVec]
+
+  ## scaled row-wise
+  pheatmap(logNormExpresMa, scale="row" ,treeheight_row = 0,cluster_rows = cr, 
+         cluster_cols = cc, color = colorRampPalette(c("#2166AC", "#F7F7F7", "#B2182B"))(50),
+         annotation_col = annotation_col, cellwidth=15, cellheight=10,
+         annotation_colors = ann_colors, gaps_row = gapVecR, gaps_col = gapVecC)
+}
+
+genesPlot <- data.frame(gene=c("TTN", "MYBPC3", "RYR2", "NEBL", "TNNT2", "CMYA5", "COL6A3", "DCN",  "FBN1", "C7", "PDGFRA", "CDH19", "PDGFRB","ITGA7","RGS5", "NOTCH3", "MYH11", "ACTA2","PECAM1", "VWF", "EGFL7", "POSTN", "ITGA10", "CDH11","CCL21", "PROX1", "FLT4", "NRXN1", "ANK3", "PTPRZ1", "ASIC2", "PIEZO2", "MTHFD1L", "ACACB", "PLIN1", "GPAM", "CD163", "MRC1", "SIGLEC1", "STAB1", "CSF1R", "MERTK", "IL7R", "PTPRC", "CD2", "KIT", "CPA3", "IL18R1"))
+
+levels(seurat)
+colVec <- colclusterName
+
+avgHeatmap(seurat, selGenes = genesPlot, colVecIdent = colVec)
+```
+
+## session info
+```{r date and session info}
+date()
+sessionInfo()
+```

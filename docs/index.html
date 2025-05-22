@@ -11,9 +11,9 @@
 
 
 
-<title>Home</title>
+<title>HumanHeartCarTrans2</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -273,7 +273,7 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">HumanHeartCarTrans2</h1>
 
 </div>
 
@@ -281,7 +281,7 @@ $(document).ready(function () {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -292,8 +292,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -302,13 +302,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-02-18
+<strong>Last updated:</strong> 2025-05-22
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>HumanHeartCarTrans2/</code> <span
@@ -331,31 +331,36 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong23c8ae3">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0cd15487b97e1c422891d6dcdbe7d38a3a802d19targetblank0cd1548a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 23c8ae3
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0cd15487b97e1c422891d6dcdbe7d38a3a802d19" target="_blank">0cd1548</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong23c8ae3"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0cd15487b97e1c422891d6dcdbe7d38a3a802d19targetblank0cd1548a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -364,7 +369,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 23c8ae3.
+The results in this page were generated with repository version
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0cd15487b97e1c422891d6dcdbe7d38a3a802d19" target="_blank">0cd1548</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -379,10 +385,24 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    data/seurat files/
+
+Untracked files:
+    Untracked:  analysis/Abundances.Rmd
+    Untracked:  analysis/BMP_HGF.Rmd
+    Untracked:  analysis/Fbhighres.Rmd
+    Untracked:  analysis/Marker_Genes.Rmd
+    Untracked:  analysis/Merge-QC-UMAPS.Rmd
+    Untracked:  analysis/QC_individual.Rmd
+    Untracked:  analysis/markerGenesRNAAllFb_snn_res.0.25
+    Untracked:  analysis/markerGenesRNA_snn_res.0.4
 
 Unstaged changes:
-    Modified:   HumanHeartCarTrans2.Rproj
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -428,10 +448,27 @@ Message
 <tbody>
 <tr>
 <td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/angeldemartin/HumanHeartCarTrans2/8745bce9698e648d40b67c6bab5fcfeca40dd97b/docs/index.html" target="_blank">8745bce</a>
+</td>
+<td>
+angeldemartin
+</td>
+<td>
+2025-02-18
+</td>
+<td>
+initial commit
+</td>
+</tr>
+<tr>
+<td>
 Rmd
 </td>
 <td>
-23c8ae3
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/23c8ae3d27ee2f746e5e090350630729d51d6e91/analysis/index.Rmd" target="_blank">23c8ae3</a>
 </td>
 <td>
 angeldemartin
@@ -450,7 +487,28 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
+<div id="merge-qc-umaps." class="section level3">
+<h3>Merge-QC-UMAPS.</h3>
+<p>merge QC and display umaps <a href="Merge-QC-UMAPS.html">link</a></p>
+</div>
+<div id="markergenes." class="section level3">
+<h3>MarkerGenes.</h3>
+<p>Calculate and plot marker and DE genes <a
+href="Marker_Genes.html">link</a></p>
+</div>
+<div id="abundances." class="section level3">
+<h3>Abundances.</h3>
+<p>Relative abundance <a href="Abundances.html">link</a></p>
+</div>
+<div id="bmp_hgf." class="section level3">
+<h3>BMP_HGF.</h3>
+<p>Expression of BMP and HGF signaling genes <a
+href="BMP_HGF.html">link</a></p>
+</div>
+<div id="fb-high-resolution" class="section level3">
+<h3>Fb high resolution</h3>
+<p>Fb <a href="Fbhighres.html">link</a></p>
+</div>
 </div>
 </div>
 </div>

@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="A.DeMartin" />
+
+<meta name="date" content="2025-02-28" />
+
+<title>HumanHeartCarTrans2</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">HumanHeartCarTrans2</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">HumanHeartCarTrans2</h1>
+<h4 class="author">A.DeMartin</h4>
+<h4 class="date">2025-02-28</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2025-04-17
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 2
+</p>
+<p>
+<strong>Knit directory:</strong> <code>HumanHeartCarTrans2/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20250218code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20250218)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20250218code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20250218)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it
+difficult for you and others to run your code on a different machine.
+Change the absolute path(s) below to the suggested relative path(s) to
+make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/seurat
+files/
+</td>
+<td style="text-align:left;">
+data/seurat files
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds
+</td>
+<td style="text-align:left;">
+data/Human_heart_allmerged_seurat.rds
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0cd15487b97e1c422891d6dcdbe7d38a3a802d19targetblank0cd1548a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0cd15487b97e1c422891d6dcdbe7d38a3a802d19" target="_blank">0cd1548</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0cd15487b97e1c422891d6dcdbe7d38a3a802d19targetblank0cd1548a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0cd15487b97e1c422891d6dcdbe7d38a3a802d19" target="_blank">0cd1548</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
+    Ignored:    data/seurat files/
+
+Untracked files:
+    Untracked:  analysis/Abundances.Rmd
+    Untracked:  analysis/BMP_HGF.Rmd
+    Untracked:  analysis/Fbhighres.Rmd
+    Untracked:  analysis/Marker_Genes.Rmd
+    Untracked:  analysis/Merge-QC-UMAPS.Rmd
+    Untracked:  analysis/QC_individual.Rmd
+    Untracked:  analysis/markerGenesRNAAllFb_snn_res.0.25
+    Untracked:  analysis/markerGenesRNA_snn_res.0.4
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<div id="load-packages" class="section level2">
+<h2>load packages</h2>
+<p>#start pre-processing</p>
+</div>
+<div id="load-files-and-merge" class="section level2">
+<h2>load files and merge</h2>
+<pre class="r"><code>### load and merge all 
+basedir &lt;- &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/seurat files/&quot;
+fileNamList &lt;- list.files(path = basedir)
+
+for(i in 1:length(fileNamList)){
+  seuratS &lt;- readRDS(paste0(basedir, fileNamList[i]))
+  seuratS@assays$RNA@layers$scale.data &lt;- NULL ##remove scale data slot to reduce size of objects
+  if(exists(&quot;seuratM&quot;)){
+    seuratM &lt;- merge(x = seuratM, y = seuratS)
+    cat(&quot;Merged&quot;, i, &quot;of&quot;, length(fileNamList), &quot;files - Total cells:&quot;, ncol(seuratM), &quot;\n&quot;)
+  }else{
+    seuratM &lt;- seuratS
+    cat(&quot;Initialized with first Seurat object:&quot;, fileNamList[i], &quot;\n&quot;)
+  }
+}
+
+remove(seuratS)
+table(seuratM$dataset)
+table(seuratM$orig.ident)
+
+### exclude file &quot;336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1&quot; ?
+#seuratMfil &lt;- subset(seuratM, dataset == &quot;336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1&quot;, invert = TRUE)
+#table(seuratM$dataset)
+#table(seuratM$orig.ident)
+
+### note visit3 of CarTransPat12 is missing - sample/data quality not sufficient
+
+#join layers
+seuratM &lt;- JoinLayers(seuratM)
+
+#rerun seurat
+seuratM &lt;- NormalizeData (object = seuratM)
+seuratM &lt;- FindVariableFeatures(object = seuratM)
+seuratM &lt;- ScaleData(object = seuratM, verbose = TRUE)
+seuratM &lt;- RunPCA(object=seuratM, npcs = 30, verbose = FALSE)
+#seuratM &lt;- RunTSNE(object=seuratM, reduction=&quot;pca&quot;, dims = 1:20)
+seuratM &lt;- RunUMAP(object=seuratM, reduction=&quot;pca&quot;, dims = 1:20)
+seuratM &lt;- FindNeighbors(object = seuratM, reduction = &quot;pca&quot;, dims= 1:20)
+
+res &lt;- c(0.25, 0.6, 0.8, 0.4)
+for (i in 1:length(res)) {
+  seuratM &lt;- FindClusters(object = seuratM, resolution = res[i], random.seed = 1234)
+}</code></pre>
+</div>
+<div id="save-object" class="section level2">
+<h2>save object</h2>
+<pre class="r"><code>### save seurat object
+saveRDS(seuratM, file=&quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds&quot;)</code></pre>
+</div>
+<div id="explore-merged-seurat-object" class="section level1">
+<h1>explore merged seurat object</h1>
+<div id="load-object" class="section level2">
+<h2>load object</h2>
+<pre class="r"><code>fileNam &lt;- &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds&quot;
+seuratM &lt;- readRDS(fileNam)
+table(seuratM$dataset)</code></pre>
+<pre><code>
+        331571_3-5_20231012_Hu_nucseq_USZ_HTx001         331571_4-6_20231012_Hu_nucseq_USZ_HTx002 
+                                            3400                                             2539 
+    334131_01-1_20231103_Hu_nucseq_USZ_HTx002_RV     334131_02-2_20231103_Hu_nucseq_USZ_HTx003_LV 
+                                            4528                                             4179 
+    334131_03-3_20231103_Hu_nucseq_USZ_HTx004_RV     334131_04-4_20231106_Hu_nucseq_USZ_HTx003_RV 
+                                            4217                                             3958 
+    334131_05-5_20231106_Hu_nucseq_USZ_HTx004_LV     334131_06-6_20231106_Hu_nucseq_USZ_HTx005_RV 
+                                            5294                                             2917 
+    334131_07-7_20231107_Hu_nucseq_USZ_HTx005_LV     334131_08-8_20231107_Hu_nucseq_USZ_HTx006_RV 
+                                            1894                                             2566 
+    334131_09-9_20231108_Hu_nucseq_USZ_HTx006_LV    334131_10-10_20231108_Hu_nucseq_USZ_HTx001_RV 
+                                            3532                                             2129 
+    336431_07-7_20231129_Hu_nucseq_USZ_HTx008_RV     336431_08-8_20231129_Hu_nucseq_USZ_EMB001_V1 
+                                            5295                                              509 
+    336431_09-9_20231129_Hu_nucseq_USZ_HTx008_LV    336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1 
+                                            3936                                             1132 
+   336431_11-11_20231129_Hu_nucseq_USZ_EMB006_V1    336431_12-12_20231129_Hu_nucseq_USZ_EMB007_V1 
+                                             493                                             1524 
+   336431_13-13_20231129_Hu_nucseq_USZ_EMB002_V1    336431_14-14_20231129_Hu_nucseq_USZ_EMB003_V1 
+                                            1941                                             1987 
+   336431_15-15_20231129_Hu_nucseq_USZ_EMB004_V1     340821_01-7_20240118_Hu_nucseq_USZ_EMB007_V2 
+                                            1688                                             1838 
+    340821_02-8_20240118_Hu_nucseq_USZ_EMB008_V2     340821_03-9_20240123_Hu_nucseq_USZ_EMB001_V3 
+                                             589                                               71 
+   340821_04-10_20240123_Hu_nucseq_USZ_EMB002_V3    340821_05-11_20240123_Hu_nucseq_USZ_EMB003_V3 
+                                             368                                              175 
+   340821_06-12_20240123_Hu_nucseq_USZ_EMB004_V3    340821_07-13_20240123_Hu_nucseq_USZ_EMB005_V3 
+                                             857                                             2057 
+   340821_08-14_20240123_Hu_nucseq_USZ_EMB006_V3    340821_09-15_20240123_Hu_nucseq_USZ_EMB007_V3 
+                                             258                                              403 
+   340821_10-16_20240123_Hu_nucseq_USZ_EMB008_V3    340821_11-17_20240123_Hu_nucseq_USZ_EMB008_V1 
+                                             193                                               55 
+   340821_12-18_20240123_Hu_nucseq_USZ_HTx007_RV    340821_13-19_20240123_Hu_nucseq_USZ_HTx007_LV 
+                                            2800                                             2581 
+     340831_1-1_20240118_Hu_nucseq_USZ_EMB001_V2      340831_2-2_20240118_Hu_nucseq_USZ_EMB002_V2 
+                                            1184                                             2976 
+     340831_3-3_20240118_Hu_nucseq_USZ_EMB003_V2      340831_4-4_20240118_Hu_nucseq_USZ_EMB004_V2 
+                                             418                                              638 
+     340831_5-5_20240118_Hu_nucseq_USZ_EMB005_V2      340831_6-6_20240118_Hu_nucseq_USZ_EMB006_V2 
+                                             719                                              863 
+     347741_4-4_20240326_Hu_nucseq_USZ_HTx010_RV      347741_5-5_20240326_Hu_nucseq_USZ_HTx010_LV 
+                                            2231                                             3143 
+    353921_01-1_20240515_Hu_nucseq_USZ_HTx011_RV     353921_02-2_20240515_Hu_nucseq_USZ_HTx011_LV 
+                                            1954                                             1433 
+    353921_03-3_20240515_Hu_nucseq_USZ_EMB011_V1     353921_04-4_20240515_Hu_nucseq_USZ_EMB011_V2 
+                                             857                                              245 
+    353921_05-5_20240515_Hu_nucseq_USZ_HTx012_RV     353921_06-6_20240515_Hu_nucseq_USZ_HTx012_LV 
+                                            1393                                             3138 
+    353921_07-7_20240515_Hu_nucseq_USZ_EMB012_V1     353921_08-8_20240515_Hu_nucseq_USZ_EMB010_V3 
+                                             826                                              743 
+    353921_09-9_20240515_Hu_nucseq_USZ_HTx013_RV    353921_10-10_20240515_Hu_nucseq_USZ_HTx013_LV 
+                                            1909                                             2673 
+ 353921_11-11_20240515_Hu_nucseq_USZ_EMB010_V1_1  353921_12-12_20240515_Hu_nucseq_USZ_EMB010_V1_2 
+                                            1118                                              292 
+   353921_13-13_20240524_Hu_nucseq_USZ_HTx015_RV    353921_14-14_20240524_Hu_nucseq_USZ_EMB011_V3 
+                                            2227                                              672 
+   353921_15-15_20240524_Hu_nucseq_USZ_EMB012_V2    353921_17-17_20240524_Hu_nucseq_USZ_HTx015_LV 
+                                            2740                                             1491 
+   353921_18-18_20240524_Hu_nucseq_USZ_EMB013_V1    353921_19-19_20240524_Hu_nucseq_USZ_EMB013_V2 
+                                             541                                              139 
+   353921_20-20_20240524_Hu_nucseq_USZ_EMB013_V3    353921_21-21_20240524_Hu_nucseq_USZ_HTx014_RV 
+                                             401                                             2538 
+   353921_22-22_20240524_Hu_nucseq_USZ_HTx014_LV    353921_23-23_20240524_Hu_nucseq_USZ_EMB014_V1 
+                                            2606                                             1106 
+   353921_24-24_20240524_Hu_nucseq_USZ_EMB014_V2     359861_01-1_20240715_Hu_nucseq_USZ_HTx016_LV 
+                                             360                                             6256 
+    359861_02-2_20240715_Hu_nucseq_USZ_HTx016_RV     359861_03-3_20240715_Hu_nucseq_USZ_EMB014_V3 
+                                            7622                                              437 
+    359861_04-4_20240715_Hu_nucseq_USZ_EMB015_V1     359861_05-5_20240715_Hu_nucseq_USZ_EMB015_V2 
+                                             178                                              216 
+    359861_06-6_20240715_Hu_nucseq_USZ_EMB015_V3     359861_07-7_20240715_Hu_nucseq_USZ_EMB016_V1 
+                                             477                                              607 
+    359861_08-8_20240715_Hu_nucseq_USZ_EMB016_V2    359861_18-10_20240730_Hu_nucseq_USZ_EMB016_V3 
+                                             107                                              295 
+ 373291_14-6_20241212_Hu_nucseq_USZ_HTx018_expRV  373291_15-7_20241212_Hu_nucseq_USZ_HTx018_expLV 
+                                             570                                              445 
+    373291_16-8_20241212_Hu_nucseq_USZ_HTx018_V1     373291_17-9_20241212_Hu_nucseq_USZ_HTx018_V2 
+                                              60                                              382 
+   373291_18-10_20241212_Hu_nucseq_USZ_HTx018_V3   o28576_1_08-8_20220525_Hu_nucseq_Graz_8_HH_GEM 
+                                              42                                             4005 
+o28576_1_10-10_20220525_Hu_nucseq_Graz_10_HH_GEM o28576_1_11-11_20220525_Hu_nucseq_Graz_11_HH_GEM 
+                                            3922                                             4265 
+o28576_1_12-12_20220525_Hu_nucseq_Graz_12_HH_GEM     o292731_1-1_20220818_Hu_nucseq_Graz_9_HH_GEM 
+                                            3853                                             6434 
+   o292731_2-2_20220818_Hu_nucseq_Graz_13_HH_GEM   o294781_01-1_20220912_Hu_nucseq_Graz_21_HH_GEM 
+                                           11568                                             1465 
+  o294781_02-2_20220912_Hu_nucseq_Graz_22_HH_GEM   o294781_03-3_20220912_Hu_nucseq_Graz_23_HH_GEM 
+                                            2064                                              866 
+  o294781_04-4_20220912_Hu_nucseq_Graz_24_HH_GEM 
+                                            2181 </code></pre>
+<pre class="r"><code>table(seuratM$RNA_snn_res.0.25)</code></pre>
+<pre><code>
+    0     1     2     3     4     5     6     7     8     9    10    11    12    13 
+54976 28829 25570 20799 14374  9087  5056  3762  3214  2558  2397  1337  1057   778 </code></pre>
+<pre class="r"><code>table(seuratM$orig.ident)</code></pre>
+<pre><code>
+       
+173794 </code></pre>
+</div>
+<div id="add-metadata" class="section level2">
+<h2>add metadata</h2>
+<pre class="r"><code># add any type of metadata
+## patient
+seuratM$patient &lt;- &quot;pat_nr&quot;
+seuratM$patient[grepl(&quot;HTx001|EMB001&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat01&quot;
+seuratM$patient[grepl(&quot;HTx002|EMB002&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat02&quot;
+seuratM$patient[grepl(&quot;HTx003|EMB003&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat03&quot;
+seuratM$patient[grepl(&quot;HTx004|EMB004&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat04&quot;
+seuratM$patient[grepl(&quot;HTx005|EMB005&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat05&quot;
+seuratM$patient[grepl(&quot;HTx006|EMB006&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat06&quot;
+seuratM$patient[grepl(&quot;HTx007|EMB007&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat07&quot;
+seuratM$patient[grepl(&quot;HTx008|EMB008&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat08&quot;
+seuratM$patient[grepl(&quot;HTx010|EMB010&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat10&quot;
+seuratM$patient[grepl(&quot;HTx011|EMB011&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat11&quot;
+seuratM$patient[grepl(&quot;HTx012|EMB012&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat12&quot;
+seuratM$patient[grepl(&quot;HTx013|EMB013&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat13&quot;
+seuratM$patient[grepl(&quot;HTx014|EMB014&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat14&quot;
+seuratM$patient[grepl(&quot;HTx015|EMB015&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat15&quot;
+seuratM$patient[grepl(&quot;HTx016|EMB016&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat16&quot;
+seuratM$patient[grepl(&quot;HTx018|EMB018&quot;, seuratM$dataset)] &lt;- &quot;CarTransPat18&quot;
+
+seuratM$patient[which(seuratM$dataset == &quot;o28576_1_08-8_20220525_Hu_nucseq_Graz_8_HH_GEM&quot;)] &lt;- &quot;HH01&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o28576_1_10-10_20220525_Hu_nucseq_Graz_10_HH_GEM&quot;)] &lt;- &quot;HH02&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o28576_1_11-11_20220525_Hu_nucseq_Graz_11_HH_GEM&quot;)] &lt;- &quot;HH03&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o28576_1_12-12_20220525_Hu_nucseq_Graz_12_HH_GEM&quot;)] &lt;- &quot;HH04&quot;
+seuratM$patient[which(seuratM$dataset ==&quot;o292731_1-1_20220818_Hu_nucseq_Graz_9_HH_GEM&quot;)] &lt;- &quot;HH05&quot;
+seuratM$patient[which(seuratM$dataset ==&quot;o292731_2-2_20220818_Hu_nucseq_Graz_13_HH_GEM&quot;)] &lt;- &quot;HH06&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o294781_01-1_20220912_Hu_nucseq_Graz_21_HH_GEM&quot;)] &lt;- &quot;HH07&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o294781_02-2_20220912_Hu_nucseq_Graz_22_HH_GEM&quot;)] &lt;- &quot;HH08&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o294781_03-3_20220912_Hu_nucseq_Graz_23_HH_GEM&quot;)] &lt;- &quot;HH09&quot;
+seuratM$patient[which(seuratM$dataset == &quot;o294781_04-4_20220912_Hu_nucseq_Graz_24_HH_GEM&quot;)] &lt;- &quot;HH10&quot;
+table(seuratM$patient)</code></pre>
+<pre><code>
+CarTransPat01 CarTransPat02 CarTransPat03 CarTransPat04 CarTransPat05 CarTransPat06 CarTransPat07 
+         7293         12352         10717         12694          8719          7712          9146 
+CarTransPat08 CarTransPat10 CarTransPat11 CarTransPat12 CarTransPat13 CarTransPat14 CarTransPat15 
+        10068          7527          5161          8097          5663          7047          4589 
+CarTransPat16 CarTransPat18          HH01          HH02          HH03          HH04          HH05 
+        14887          1499          4005          3922          4265          3853          6434 
+         HH06          HH07          HH08          HH09          HH10 
+        11568          1465          2064           866          2181 </code></pre>
+<pre class="r"><code>ordpatients &lt;- c(&quot;HH01&quot;, &quot;HH02&quot;, &quot;HH03&quot;, &quot;HH04&quot;, &quot;HH05&quot;, &quot;HH06&quot;, &quot;HH07&quot;, &quot;HH08&quot;, &quot;HH09&quot;, &quot;HH10&quot;, 
+                 &quot;CarTransPat01&quot;, &quot;CarTransPat02&quot;, &quot;CarTransPat03&quot;, &quot;CarTransPat04&quot;, &quot;CarTransPat05&quot;, &quot;CarTransPat06&quot;, &quot;CarTransPat07&quot;, &quot;CarTransPat08&quot;,
+                 &quot;CarTransPat10&quot;, &quot;CarTransPat11&quot;, &quot;CarTransPat12&quot;, &quot;CarTransPat13&quot;, &quot;CarTransPat14&quot;, &quot;CarTransPat15&quot;, &quot;CarTransPat16&quot;, &quot;CarTransPat18&quot;)
+Idents(seuratM) &lt;- seuratM$patient
+seuratM$patient &lt;- factor(seuratM$patient, levels=ordpatients)
+Idents(seuratM) &lt;- seuratM$patient
+table(seuratM$patient)</code></pre>
+<pre><code>
+         HH01          HH02          HH03          HH04          HH05          HH06          HH07 
+         4005          3922          4265          3853          6434         11568          1465 
+         HH08          HH09          HH10 CarTransPat01 CarTransPat02 CarTransPat03 CarTransPat04 
+         2064           866          2181          7293         12352         10717         12694 
+CarTransPat05 CarTransPat06 CarTransPat07 CarTransPat08 CarTransPat10 CarTransPat11 CarTransPat12 
+         8719          7712          9146         10068          7527          5161          8097 
+CarTransPat13 CarTransPat14 CarTransPat15 CarTransPat16 CarTransPat18 
+         5663          7047          4589         14887          1499 </code></pre>
+<pre class="r"><code>### diseaseCond
+seuratM$diseaseCond &lt;- &quot;diseaseCond&quot;
+seuratM$diseaseCond[grepl(&quot;V1&quot;, seuratM$dataset)] &lt;- &quot;visit1&quot;
+seuratM$diseaseCond[grepl(&quot;V2|353921_12-12_20240515_Hu_nucseq_USZ_EMB010_V1_2&quot;, seuratM$dataset)] &lt;- &quot;visit2&quot;
+seuratM$diseaseCond[grepl(&quot;V3&quot;, seuratM$dataset)] &lt;- &quot;visit3&quot;
+seuratM$diseaseCond[grepl(&quot;HH&quot;, seuratM$dataset)] &lt;- &quot;healthy&quot;
+seuratM$diseaseCond[grepl(&quot;RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002&quot;, seuratM$dataset)] &lt;- &quot;explant&quot;
+table(seuratM$diseaseCond)</code></pre>
+<pre><code>
+explant healthy  visit1  visit2  visit3 
+  97394   40623   14622   13706    7449 </code></pre>
+<pre class="r"><code>orddiseaseCond &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+Idents(seuratM) &lt;- seuratM$diseaseCond
+seuratM$diseaseCond &lt;- factor(seuratM$diseaseCond, levels=orddiseaseCond)
+Idents(seuratM) &lt;- seuratM$diseaseCond
+table(seuratM$diseaseCond)</code></pre>
+<pre><code>
+healthy explant  visit1  visit2  visit3 
+  40623   97394   14622   13706    7449 </code></pre>
+<pre class="r"><code>#### cluster_name
+seuratM$clusterName &lt;- &quot;clusterName&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;0&quot; )] &lt;- &quot;Fb1&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;1&quot; )] &lt;- &quot;BEC1&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;2&quot; )] &lt;- &quot;PerivFb1&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;3&quot; )] &lt;- &quot;Fb2&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;4&quot; )] &lt;- &quot;CM&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;5&quot; )] &lt;- &quot;Mph1&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;6&quot; )] &lt;- &quot;Mph2&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;7&quot; )] &lt;- &quot;Tcell1&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;8&quot; )] &lt;- &quot;VSMC&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;9&quot; )] &lt;- &quot;BEC2&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;10&quot; )] &lt;- &quot;BEC3&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;11&quot; )] &lt;- &quot;Mph3&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;12&quot; )] &lt;- &quot;Fb3&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;13&quot; )] &lt;- &quot;NC&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;14&quot; )] &lt;- &quot;Baror&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;15&quot; )] &lt;- &quot;Tcell2&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;16&quot; )] &lt;- &quot;LEC&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;17&quot; )] &lt;- &quot;PerivFb2&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;18&quot; )] &lt;- &quot;Adipoc&quot;
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% &quot;19&quot; )] &lt;- &quot;Mastcell&quot;
+table(seuratM$clusterName)</code></pre>
+<pre><code>
+  Adipoc    Baror     BEC1     BEC2     BEC3       CM      Fb1      Fb2      Fb3      LEC Mastcell 
+     778     2313    25217     3550     3259    14393    34945    20185     2562     1060      238 
+    Mph1     Mph2     Mph3       NC PerivFb1 PerivFb2   Tcell1   Tcell2     VSMC 
+   12126     9179     3215     2397    24499      880     8022     1342     3634 </code></pre>
+<pre class="r"><code>table(seuratM$RNA_snn_res.0.4)</code></pre>
+<pre><code>
+    0     1     2     3     4     5     6     7     8     9    10    11    12    13    14    15 
+34945 25217 24499 20185 14393 12126  9179  8022  3634  3550  3259  3215  2562  2397  2313  1342 
+   16    17    18    19 
+ 1060   880   778   238 </code></pre>
+<pre class="r"><code>###order
+Idents(seuratM) &lt;- seuratM$clusterName
+seuratM$clusterName &lt;- factor(seuratM$clusterName, levels=c(&quot;CM&quot;,&quot;Fb1&quot;,&quot;Fb2&quot;, &quot;Fb3&quot;,&quot;PerivFb1&quot;,&quot;PerivFb2&quot;,&quot;VSMC&quot;,&quot;BEC1&quot;, &quot;BEC2&quot;,&quot;BEC3&quot;,&quot;LEC&quot;,&quot;NC&quot;,&quot;Baror&quot;,&quot;Adipoc&quot;,&quot;Mph1&quot;,&quot;Mph2&quot;,&quot;Mph3&quot;,&quot;Tcell1&quot;,&quot;Tcell2&quot;,&quot;Mastcell&quot;))
+Idents(seuratM) &lt;- seuratM$clusterName
+table(seuratM$clusterName)</code></pre>
+<pre><code>
+      CM      Fb1      Fb2      Fb3 PerivFb1 PerivFb2     VSMC     BEC1     BEC2     BEC3      LEC 
+   14393    34945    20185     2562    24499      880     3634    25217     3550     3259     1060 
+      NC    Baror   Adipoc     Mph1     Mph2     Mph3   Tcell1   Tcell2 Mastcell 
+    2397     2313      778    12126     9179     3215     8022     1342      238 </code></pre>
+<pre class="r"><code>###combined slots
+seuratM$patient_diseaseCond &lt;- paste0(seuratM$patient, &#39;_&#39;, seuratM$diseaseCond)
+table(seuratM$patient_diseaseCond)</code></pre>
+<pre><code>
+CarTransPat01_explant  CarTransPat01_visit1  CarTransPat01_visit2  CarTransPat01_visit3 
+                 5529                   509                  1184                    71 
+CarTransPat02_explant  CarTransPat02_visit1  CarTransPat02_visit2  CarTransPat02_visit3 
+                 7067                  1941                  2976                   368 
+CarTransPat03_explant  CarTransPat03_visit1  CarTransPat03_visit2  CarTransPat03_visit3 
+                 8137                  1987                   418                   175 
+CarTransPat04_explant  CarTransPat04_visit1  CarTransPat04_visit2  CarTransPat04_visit3 
+                 9511                  1688                   638                   857 
+CarTransPat05_explant  CarTransPat05_visit1  CarTransPat05_visit2  CarTransPat05_visit3 
+                 4811                  1132                   719                  2057 
+CarTransPat06_explant  CarTransPat06_visit1  CarTransPat06_visit2  CarTransPat06_visit3 
+                 6098                   493                   863                   258 
+CarTransPat07_explant  CarTransPat07_visit1  CarTransPat07_visit2  CarTransPat07_visit3 
+                 5381                  1524                  1838                   403 
+CarTransPat08_explant  CarTransPat08_visit1  CarTransPat08_visit2  CarTransPat08_visit3 
+                 9231                    55                   589                   193 
+CarTransPat10_explant  CarTransPat10_visit1  CarTransPat10_visit2  CarTransPat10_visit3 
+                 5374                  1118                   292                   743 
+CarTransPat11_explant  CarTransPat11_visit1  CarTransPat11_visit2  CarTransPat11_visit3 
+                 3387                   857                   245                   672 
+CarTransPat12_explant  CarTransPat12_visit1  CarTransPat12_visit2 CarTransPat13_explant 
+                 4531                   826                  2740                  4582 
+ CarTransPat13_visit1  CarTransPat13_visit2  CarTransPat13_visit3 CarTransPat14_explant 
+                  541                   139                   401                  5144 
+ CarTransPat14_visit1  CarTransPat14_visit2  CarTransPat14_visit3 CarTransPat15_explant 
+                 1106                   360                   437                  3718 
+ CarTransPat15_visit1  CarTransPat15_visit2  CarTransPat15_visit3 CarTransPat16_explant 
+                  178                   216                   477                 13878 
+ CarTransPat16_visit1  CarTransPat16_visit2  CarTransPat16_visit3 CarTransPat18_explant 
+                  607                   107                   295                  1015 
+ CarTransPat18_visit1  CarTransPat18_visit2  CarTransPat18_visit3          HH01_healthy 
+                   60                   382                    42                  4005 
+         HH02_healthy          HH03_healthy          HH04_healthy          HH05_healthy 
+                 3922                  4265                  3853                  6434 
+         HH06_healthy          HH07_healthy          HH08_healthy          HH09_healthy 
+                11568                  1465                  2064                   866 
+         HH10_healthy 
+                 2181 </code></pre>
+<pre class="r"><code>seuratM$patient_clusterName &lt;- paste0(seuratM$patient, &#39;_&#39;, seuratM$clusterName)
+table(seuratM$patient_clusterName)</code></pre>
+<pre><code>
+  CarTransPat01_Adipoc    CarTransPat01_Baror     CarTransPat01_BEC1     CarTransPat01_BEC2 
+                   103                     32                    988                     65 
+    CarTransPat01_BEC3       CarTransPat01_CM      CarTransPat01_Fb1      CarTransPat01_Fb2 
+                    26                    319                   2639                    646 
+     CarTransPat01_Fb3      CarTransPat01_LEC CarTransPat01_Mastcell     CarTransPat01_Mph1 
+                   140                     85                     11                    404 
+    CarTransPat01_Mph2     CarTransPat01_Mph3       CarTransPat01_NC CarTransPat01_PerivFb1 
+                   549                    114                     73                    559 
+CarTransPat01_PerivFb2   CarTransPat01_Tcell1   CarTransPat01_Tcell2     CarTransPat01_VSMC 
+                    30                    322                     60                    128 
+  CarTransPat02_Adipoc    CarTransPat02_Baror     CarTransPat02_BEC1     CarTransPat02_BEC2 
+                    43                     71                    973                     54 
+    CarTransPat02_BEC3       CarTransPat02_CM      CarTransPat02_Fb1      CarTransPat02_Fb2 
+                   269                   1222                   3325                    619 
+     CarTransPat02_Fb3      CarTransPat02_LEC CarTransPat02_Mastcell     CarTransPat02_Mph1 
+                   128                     96                     13                    705 
+    CarTransPat02_Mph2     CarTransPat02_Mph3       CarTransPat02_NC CarTransPat02_PerivFb1 
+                  1120                    244                    188                   1242 
+CarTransPat02_PerivFb2   CarTransPat02_Tcell1   CarTransPat02_Tcell2     CarTransPat02_VSMC 
+                    23                   1683                    160                    174 
+  CarTransPat03_Adipoc    CarTransPat03_Baror     CarTransPat03_BEC1     CarTransPat03_BEC2 
+                     1                    492                   2706                    347 
+    CarTransPat03_BEC3       CarTransPat03_CM      CarTransPat03_Fb1      CarTransPat03_Fb2 
+                   193                    437                   1156                   1595 
+     CarTransPat03_Fb3      CarTransPat03_LEC CarTransPat03_Mastcell     CarTransPat03_Mph1 
+                   139                     38                     12                    500 
+    CarTransPat03_Mph2     CarTransPat03_Mph3       CarTransPat03_NC CarTransPat03_PerivFb1 
+                   757                    157                    227                    920 
+CarTransPat03_PerivFb2   CarTransPat03_Tcell1   CarTransPat03_Tcell2     CarTransPat03_VSMC 
+                    66                    687                    117                    170 
+  CarTransPat04_Adipoc    CarTransPat04_Baror     CarTransPat04_BEC1     CarTransPat04_BEC2 
+                    27                    276                   1587                    143 
+    CarTransPat04_BEC3       CarTransPat04_CM      CarTransPat04_Fb1      CarTransPat04_Fb2 
+                   160                    747                   1176                   2718 
+     CarTransPat04_Fb3      CarTransPat04_LEC CarTransPat04_Mastcell     CarTransPat04_Mph1 
+                   183                    314                     10                   1026 
+    CarTransPat04_Mph2     CarTransPat04_Mph3       CarTransPat04_NC CarTransPat04_PerivFb1 
+                  1011                    311                    102                   1436 
+CarTransPat04_PerivFb2   CarTransPat04_Tcell1   CarTransPat04_Tcell2     CarTransPat04_VSMC 
+                    48                    993                    152                    274 
+  CarTransPat05_Adipoc    CarTransPat05_Baror     CarTransPat05_BEC1     CarTransPat05_BEC2 
+                    15                    109                    933                    163 
+    CarTransPat05_BEC3       CarTransPat05_CM      CarTransPat05_Fb1      CarTransPat05_Fb2 
+                   137                    453                   2399                    653 
+     CarTransPat05_Fb3      CarTransPat05_LEC CarTransPat05_Mastcell     CarTransPat05_Mph1 
+                    61                     69                      3                   1240 
+    CarTransPat05_Mph2     CarTransPat05_Mph3       CarTransPat05_NC CarTransPat05_PerivFb1 
+                   695                    150                    129                    815 
+CarTransPat05_PerivFb2   CarTransPat05_Tcell1   CarTransPat05_Tcell2     CarTransPat05_VSMC 
+                    18                    482                     46                    149 
+  CarTransPat06_Adipoc    CarTransPat06_Baror     CarTransPat06_BEC1     CarTransPat06_BEC2 
+                   185                    170                    721                     36 
+    CarTransPat06_BEC3       CarTransPat06_CM      CarTransPat06_Fb1      CarTransPat06_Fb2 
+                   207                    291                   1351                   1735 
+     CarTransPat06_Fb3      CarTransPat06_LEC CarTransPat06_Mastcell     CarTransPat06_Mph1 
+                    94                    102                     16                    502 
+    CarTransPat06_Mph2     CarTransPat06_Mph3       CarTransPat06_NC CarTransPat06_PerivFb1 
+                   480                    105                     69                   1113 
+CarTransPat06_PerivFb2   CarTransPat06_Tcell1   CarTransPat06_Tcell2     CarTransPat06_VSMC 
+                    19                    323                     50                    143 
+  CarTransPat07_Adipoc    CarTransPat07_Baror     CarTransPat07_BEC1     CarTransPat07_BEC2 
+                    12                     84                   1330                    164 
+    CarTransPat07_BEC3       CarTransPat07_CM      CarTransPat07_Fb1      CarTransPat07_Fb2 
+                   214                    398                   2825                    779 
+     CarTransPat07_Fb3      CarTransPat07_LEC CarTransPat07_Mastcell     CarTransPat07_Mph1 
+                   115                     29                     10                    617 
+    CarTransPat07_Mph2     CarTransPat07_Mph3       CarTransPat07_NC CarTransPat07_PerivFb1 
+                   437                    141                    176                   1075 
+CarTransPat07_PerivFb2   CarTransPat07_Tcell1   CarTransPat07_Tcell2     CarTransPat07_VSMC 
+                    50                    409                     80                    201 
+  CarTransPat08_Adipoc    CarTransPat08_Baror     CarTransPat08_BEC1     CarTransPat08_BEC2 
+                    11                     54                   2287                    194 
+    CarTransPat08_BEC3       CarTransPat08_CM      CarTransPat08_Fb1      CarTransPat08_Fb2 
+                   119                    380                   1290                   2439 
+     CarTransPat08_Fb3      CarTransPat08_LEC CarTransPat08_Mastcell     CarTransPat08_Mph1 
+                   240                     13                     14                    701 
+    CarTransPat08_Mph2     CarTransPat08_Mph3       CarTransPat08_NC CarTransPat08_PerivFb1 
+                   246                    163                    155                   1211 
+CarTransPat08_PerivFb2   CarTransPat08_Tcell1   CarTransPat08_Tcell2     CarTransPat08_VSMC 
+                    64                    171                     33                    283 
+  CarTransPat10_Adipoc    CarTransPat10_Baror     CarTransPat10_BEC1     CarTransPat10_BEC2 
+                    17                     53                   1386                     78 
+    CarTransPat10_BEC3       CarTransPat10_CM      CarTransPat10_Fb1      CarTransPat10_Fb2 
+                    48                    757                   1052                   1005 
+     CarTransPat10_Fb3      CarTransPat10_LEC CarTransPat10_Mastcell     CarTransPat10_Mph1 
+                   103                     15                      2                    338 
+    CarTransPat10_Mph2     CarTransPat10_Mph3       CarTransPat10_NC CarTransPat10_PerivFb1 
+                   223                    102                    132                   1316 
+CarTransPat10_PerivFb2   CarTransPat10_Tcell1   CarTransPat10_Tcell2     CarTransPat10_VSMC 
+                    46                    559                    120                    175 
+  CarTransPat11_Adipoc    CarTransPat11_Baror     CarTransPat11_BEC1     CarTransPat11_BEC2 
+                    28                     61                    571                     76 
+    CarTransPat11_BEC3       CarTransPat11_CM      CarTransPat11_Fb1      CarTransPat11_Fb2 
+                   182                    793                    863                    769 
+     CarTransPat11_Fb3      CarTransPat11_LEC CarTransPat11_Mastcell     CarTransPat11_Mph1 
+                    65                     46                     10                    536 
+    CarTransPat11_Mph2     CarTransPat11_Mph3       CarTransPat11_NC CarTransPat11_PerivFb1 
+                   187                     99                     55                    473 
+CarTransPat11_PerivFb2   CarTransPat11_Tcell1   CarTransPat11_Tcell2     CarTransPat11_VSMC 
+                     9                    213                     30                     95 
+   CarTransPat12_Baror     CarTransPat12_BEC1     CarTransPat12_BEC2     CarTransPat12_BEC3 
+                   230                   1989                    131                     95 
+      CarTransPat12_CM      CarTransPat12_Fb1      CarTransPat12_Fb2      CarTransPat12_Fb3 
+                   629                   1011                   1192                    121 
+     CarTransPat12_LEC CarTransPat12_Mastcell     CarTransPat12_Mph1     CarTransPat12_Mph2 
+                    10                      3                    309                    673 
+    CarTransPat12_Mph3       CarTransPat12_NC CarTransPat12_PerivFb1 CarTransPat12_PerivFb2 
+                   188                     78                    783                     48 
+  CarTransPat12_Tcell1   CarTransPat12_Tcell2     CarTransPat12_VSMC   CarTransPat13_Adipoc 
+                   349                     77                    181                     30 
+   CarTransPat13_Baror     CarTransPat13_BEC1     CarTransPat13_BEC2     CarTransPat13_BEC3 
+                   145                   1239                    149                     88 
+      CarTransPat13_CM      CarTransPat13_Fb1      CarTransPat13_Fb2      CarTransPat13_Fb3 
+                   743                    290                    565                     74 
+     CarTransPat13_LEC CarTransPat13_Mastcell     CarTransPat13_Mph1     CarTransPat13_Mph2 
+                    20                      3                    380                    397 
+    CarTransPat13_Mph3       CarTransPat13_NC CarTransPat13_PerivFb1 CarTransPat13_PerivFb2 
+                   162                     74                    671                     54 
+  CarTransPat13_Tcell1   CarTransPat13_Tcell2     CarTransPat13_VSMC   CarTransPat14_Adipoc 
+                   331                     72                    176                     85 
+   CarTransPat14_Baror     CarTransPat14_BEC1     CarTransPat14_BEC2     CarTransPat14_BEC3 
+                    50                    782                     57                    156 
+      CarTransPat14_CM      CarTransPat14_Fb1      CarTransPat14_Fb2      CarTransPat14_Fb3 
+                   268                   2074                   1173                    118 
+     CarTransPat14_LEC CarTransPat14_Mastcell     CarTransPat14_Mph1     CarTransPat14_Mph2 
+                    37                     14                    338                    306 
+    CarTransPat14_Mph3       CarTransPat14_NC CarTransPat14_PerivFb1 CarTransPat14_PerivFb2 
+                   152                     74                    821                     37 
+  CarTransPat14_Tcell1   CarTransPat14_Tcell2     CarTransPat14_VSMC   CarTransPat15_Adipoc 
+                   337                     79                     89                     22 
+   CarTransPat15_Baror     CarTransPat15_BEC1     CarTransPat15_BEC2     CarTransPat15_BEC3 
+                    76                    289                     30                     94 
+      CarTransPat15_CM      CarTransPat15_Fb1      CarTransPat15_Fb2      CarTransPat15_Fb3 
+                   480                   1623                    275                     39 
+     CarTransPat15_LEC CarTransPat15_Mastcell     CarTransPat15_Mph1     CarTransPat15_Mph2 
+                    36                      6                    484                    233 
+    CarTransPat15_Mph3       CarTransPat15_NC CarTransPat15_PerivFb1 CarTransPat15_PerivFb2 
+                   105                     57                    497                      6 
+  CarTransPat15_Tcell1   CarTransPat15_Tcell2     CarTransPat15_VSMC   CarTransPat16_Adipoc 
+                   157                     28                     52                    115 
+   CarTransPat16_Baror     CarTransPat16_BEC1     CarTransPat16_BEC2     CarTransPat16_BEC3 
+                   283                   1315                    113                    285 
+      CarTransPat16_CM      CarTransPat16_Fb1      CarTransPat16_Fb2      CarTransPat16_Fb3 
+                   367                   3922                   2481                    449 
+     CarTransPat16_LEC CarTransPat16_Mastcell     CarTransPat16_Mph1     CarTransPat16_Mph2 
+                    44                     46                    982                    577 
+    CarTransPat16_Mph3       CarTransPat16_NC CarTransPat16_PerivFb1 CarTransPat16_PerivFb2 
+                   550                    190                   2523                     90 
+  CarTransPat16_Tcell1   CarTransPat16_Tcell2     CarTransPat16_VSMC   CarTransPat18_Adipoc 
+                   231                    128                    196                      6 
+   CarTransPat18_Baror     CarTransPat18_BEC1     CarTransPat18_BEC2     CarTransPat18_BEC3 
+                    81                    248                     50                     31 
+      CarTransPat18_CM      CarTransPat18_Fb1      CarTransPat18_Fb2      CarTransPat18_Fb3 
+                    86                    132                    108                      5 
+     CarTransPat18_LEC CarTransPat18_Mastcell     CarTransPat18_Mph1     CarTransPat18_Mph2 
+                     8                      5                     85                    154 
+    CarTransPat18_Mph3       CarTransPat18_NC CarTransPat18_PerivFb1 CarTransPat18_PerivFb2 
+                    15                     40                    185                      2 
+  CarTransPat18_Tcell1   CarTransPat18_Tcell2     CarTransPat18_VSMC            HH01_Adipoc 
+                   224                      6                     28                      4 
+            HH01_Baror              HH01_BEC1              HH01_BEC2              HH01_BEC3 
+                     1                    543                    248                     17 
+               HH01_CM               HH01_Fb1               HH01_Fb2               HH01_Fb3 
+                   726                    993                    152                     45 
+              HH01_LEC          HH01_Mastcell              HH01_Mph1              HH01_Mph2 
+                    13                      4                    251                     78 
+             HH01_Mph3                HH01_NC          HH01_PerivFb1          HH01_PerivFb2 
+                    40                     72                    573                     18 
+           HH01_Tcell1            HH01_Tcell2              HH01_VSMC            HH02_Adipoc 
+                    62                     11                    154                     66 
+            HH02_Baror              HH02_BEC1              HH02_BEC2              HH02_BEC3 
+                     1                    317                     85                     24 
+               HH02_CM               HH02_Fb1               HH02_Fb2               HH02_Fb3 
+                  1125                   1006                     18                     30 
+              HH02_LEC          HH02_Mastcell              HH02_Mph1              HH02_Mph2 
+                     8                      4                    400                     49 
+             HH02_Mph3                HH02_NC          HH02_PerivFb1          HH02_PerivFb2 
+                    41                     36                    526                     11 
+           HH02_Tcell1            HH02_Tcell2              HH02_VSMC             HH03_Baror 
+                   101                      9                     65                      2 
+             HH03_BEC1              HH03_BEC2              HH03_BEC3                HH03_CM 
+                   538                    243                     30                    457 
+              HH03_Fb1               HH03_Fb2               HH03_Fb3               HH03_LEC 
+                   365                    455                     45                      1 
+         HH03_Mastcell              HH03_Mph1              HH03_Mph2              HH03_Mph3 
+                    14                    362                    270                     60 
+               HH03_NC          HH03_PerivFb1          HH03_PerivFb2            HH03_Tcell1 
+                    30                   1168                     32                     96 
+           HH03_Tcell2              HH03_VSMC             HH04_Baror              HH04_BEC1 
+                    20                     77                      1                    820 
+             HH04_BEC2              HH04_BEC3                HH04_CM               HH04_Fb1 
+                   340                     13                    118                   1022 
+              HH04_Fb2               HH04_Fb3               HH04_LEC          HH04_Mastcell 
+                    86                     66                      6                      5 
+             HH04_Mph1              HH04_Mph2              HH04_Mph3                HH04_NC 
+                   143                     59                     19                     22 
+         HH04_PerivFb1          HH04_PerivFb2            HH04_Tcell1            HH04_Tcell2 
+                   973                     33                     29                      3 
+             HH04_VSMC            HH05_Adipoc             HH05_Baror              HH05_BEC1 
+                    95                      4                     29                    768 
+             HH05_BEC2              HH05_BEC3                HH05_CM               HH05_Fb1 
+                    63                    607                    756                   1521 
+              HH05_Fb2               HH05_Fb3               HH05_LEC          HH05_Mastcell 
+                   312                     35                     28                      3 
+             HH05_Mph1              HH05_Mph2              HH05_Mph3                HH05_NC 
+                   456                    383                     62                     72 
+         HH05_PerivFb1          HH05_PerivFb2            HH05_Tcell1            HH05_Tcell2 
+                  1057                     14                    105                      7 
+             HH05_VSMC            HH06_Adipoc             HH06_Baror              HH06_BEC1 
+                   152                      3                      6                   1897 
+             HH06_BEC2              HH06_BEC3                HH06_CM               HH06_Fb1 
+                   484                    252                   2314                   2161 
+              HH06_Fb2               HH06_Fb3               HH06_LEC          HH06_Mastcell 
+                   282                    237                     22                      3 
+             HH06_Mph1              HH06_Mph2              HH06_Mph3                HH06_NC 
+                   680                    143                    170                    268 
+         HH06_PerivFb1          HH06_PerivFb2            HH06_Tcell1            HH06_Tcell2 
+                  2051                    125                     79                     39 
+             HH06_VSMC             HH07_Baror              HH07_BEC1              HH07_BEC2 
+                   352                      1                    196                     63 
+               HH07_CM               HH07_Fb1               HH07_Fb2               HH07_Fb3 
+                    78                     67                     21                      5 
+         HH07_Mastcell              HH07_Mph1              HH07_Mph2              HH07_Mph3 
+                     9                    154                     12                     17 
+               HH07_NC          HH07_PerivFb1          HH07_PerivFb2            HH07_Tcell1 
+                    15                    736                     11                      9 
+           HH07_Tcell2              HH07_VSMC              HH08_BEC1              HH08_BEC2 
+                     7                     64                    192                     78 
+             HH08_BEC3                HH08_CM               HH08_Fb1               HH08_Fb2 
+                     1                    220                    293                     28 
+              HH08_Fb3          HH08_Mastcell              HH08_Mph1              HH08_Mph2 
+                    15                     11                    369                     38 
+             HH08_Mph3                HH08_NC          HH08_PerivFb1          HH08_PerivFb2 
+                    26                     32                    663                      8 
+           HH08_Tcell1            HH08_Tcell2              HH08_VSMC             HH09_Baror 
+                    27                      1                     62                      1 
+             HH09_BEC1              HH09_BEC2              HH09_BEC3                HH09_CM 
+                   161                     58                      6                     61 
+              HH09_Fb1               HH09_Fb2               HH09_Fb3               HH09_LEC 
+                    36                     34                      4                      7 
+         HH09_Mastcell              HH09_Mph1              HH09_Mph2              HH09_Mph3 
+                     4                    104                     19                      9 
+               HH09_NC          HH09_PerivFb1          HH09_PerivFb2            HH09_Tcell1 
+                     8                    307                      8                      8 
+           HH09_Tcell2              HH09_VSMC            HH10_Adipoc             HH10_Baror 
+                     5                     26                      1                      4 
+             HH10_BEC1              HH10_BEC2              HH10_BEC3                HH10_CM 
+                   441                     38                      5                    168 
+              HH10_Fb1               HH10_Fb2               HH10_Fb3               HH10_LEC 
+                   353                     45                      6                     13 
+         HH10_Mastcell              HH10_Mph1              HH10_Mph2              HH10_Mph3 
+                     3                     60                     83                     13 
+               HH10_NC          HH10_PerivFb1          HH10_PerivFb2            HH10_Tcell1 
+                    23                    805                     10                     35 
+           HH10_Tcell2              HH10_VSMC 
+                     2                     73 </code></pre>
+<p>##set color vectors</p>
+<pre class="r"><code>colclusterName &lt;- c(&quot;#67001f&quot;, &quot;#f4a582&quot;,&quot;#D53E4F&quot;, &quot;#FEE08B&quot;,&quot;#8c510a&quot;,&quot;#003c30&quot;,&quot;#01665e&quot;,&quot;#66C2A5&quot;, &quot;#3288BD&quot;,&quot;#BEAED4&quot;, &quot;#c7eae5&quot;, &quot;#B09C85&quot;, &quot;#4e5a4c&quot;,&quot;#393A3F&quot;,&quot;#355C7D&quot;,&quot;#202547&quot;,&quot;#B45B5C&quot;,&quot;#725663FF&quot;,&quot;#232429&quot;,&quot;grey&quot;)
+names(colclusterName) &lt;- c(&quot;CM&quot;,&quot;Fb1&quot;,&quot;Fb2&quot;,&quot;Fb3&quot;,&quot;PerivFb1&quot;,&quot;PerivFb2&quot;,&quot;VSMC&quot;,&quot;BEC1&quot;,&quot;BEC2&quot;,&quot;BEC3&quot;,&quot;LEC&quot;,&quot;NC&quot;,&quot;Baror&quot;,&quot;Adipoc&quot;,&quot;Mph1&quot;,&quot;Mph2&quot;,&quot;Tcell1&quot;,&quot;Tcell2&quot;,&quot;Mastcell&quot;, &quot;Mph3&quot;)
+
+coldiseaseCond &lt;- c(&quot;#dfc27d&quot;,&quot;#BE3144&quot;,&quot;#202547&quot;,&quot;#355C7D&quot;,&quot;#779d8d&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot;, &quot;visit1&quot;, &quot;visit2&quot;, &quot;visit3&quot;)</code></pre>
+</div>
+<div id="qc-merged" class="section level2">
+<h2>QC merged</h2>
+<pre class="r"><code># Extract meta.data from the Seurat object
+meta.data &lt;- seuratM@meta.data
+# Create the density plot
+ptotalpat &lt;- ggplot(data = meta.data, aes(x = total, color = patient, fill = patient)) +
+  geom_density(alpha = 0.2) +
+  #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab(&quot;density&quot;) +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+pdetectedpat &lt;- ggplot(data = meta.data, aes(x = detected, color = patient, fill = patient)) +
+  geom_density(alpha = 0.2) +
+ #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab(&quot;density&quot;) +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+# Return the plots as a list
+list(ptotalpat, pdetectedpat)</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/QC%20patient-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/QC%20patient-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Extract meta.data from the Seurat object
+meta.data &lt;- seuratM@meta.data
+# Create the density plot
+ptotalpat &lt;- ggplot(data = meta.data, aes(x = total, color = dataset, fill = dataset)) +
+  geom_density(alpha = 0.2) +
+  #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab(&quot;density&quot;) +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+pdetectedpat &lt;- ggplot(data = meta.data, aes(x = detected, color = dataset, fill = dataset)) +
+  geom_density(alpha = 0.2) +
+ #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab(&quot;density&quot;) +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+# Return the plots as a list
+list(ptotalpat, pdetectedpat)</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/QC%20dataset-1.png" width="3840" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/QC%20dataset-2.png" width="3840" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cell_count &lt;- data.frame(table(seuratM$dataset))
+colnames(cell_count) &lt;- c(&quot;dataset&quot;, &quot;Freq&quot;)
+hsize &lt;- 1.5
+
+ggplot(cell_count, aes(x = hsize, y = Freq, fill = dataset)) +
+  #scale_fill_manual(values = colpat2) +
+  geom_col(color = &quot;white&quot;) +
+  coord_polar(theta = &quot;y&quot;) +
+  xlim(c(0.2, hsize + 0.5)) +
+  theme_void() +
+  ggtitle(&quot;cell number&quot;) +
+  theme(plot.title = element_text(hjust = 0.5, size = 10), legend.text = element_text(size = 10), legend.title = element_text(size = 10)) +
+  geom_text(aes(label = Freq), position = position_stack(vjust = 0.5), size = 10)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/cellnumber%20circle%20dataset-1.png" width="3840" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plot-umaps" class="section level2">
+<h2>plot umaps</h2>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$RNA_snn_res.0.25
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, raster = FALSE, label = TRUE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$RNA_snn_res.0.4
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, raster = FALSE, label = TRUE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$RNA_snn_res.0.6
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, raster = FALSE, label = TRUE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$patient
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$clusterName
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = colclusterName, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = colclusterName, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = colclusterName, raster = FALSE, label = TRUE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratM) &lt;- seuratM$diseaseCond
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, shuffle = TRUE, raster=FALSE)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, shuffle = TRUE, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coldiseaseCond &lt;- c(&quot;#dfc27d&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;healthy&quot;, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;healthy&quot;, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coldiseaseCond &lt;- c(&quot;lightgrey&quot;,&quot;#BE3144&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;explant&quot;, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;explant&quot;, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coldiseaseCond &lt;- c(&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;#202547&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit1&quot;, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit1&quot;, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coldiseaseCond &lt;- c(&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;#355C7D&quot;,&quot;lightgrey&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit2&quot;, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-17.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit2&quot;, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-18.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coldiseaseCond &lt;- c(&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;lightgrey&quot;,&quot;#779d8d&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot; ,&quot;visit1&quot;, &quot;visit2&quot; ,&quot;visit3&quot;)
+DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit3&quot;, raster = FALSE) </code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-19.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratM, reduction = &quot;umap&quot;, pt.size = 0.1, cols = coldiseaseCond, order = &quot;visit3&quot;, raster = FALSE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Merge-QC-UMAPS.Rmd/umap-20.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>##reset coldiseaseCond
+coldiseaseCond &lt;- c(&quot;#dfc27d&quot;,&quot;#BE3144&quot;,&quot;#202547&quot;,&quot;#355C7D&quot;,&quot;#779d8d&quot;)
+names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot;, &quot;visit1&quot;, &quot;visit2&quot;, &quot;visit3&quot;)</code></pre>
+</div>
+<div id="session-info" class="section level2">
+<h2>session info</h2>
+<pre class="r"><code>date()</code></pre>
+<pre><code>[1] &quot;Thu Apr 17 14:24:48 2025&quot;</code></pre>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.0 (2024-04-24)
+Platform: x86_64-apple-darwin20
+Running under: macOS Ventura 13.7.5
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] NCmisc_1.2.0                VennDiagram_1.7.3           futile.logger_1.4.3        
+ [4] ggupset_0.4.1               gridExtra_2.3               DOSE_3.30.5                
+ [7] enrichplot_1.24.4           msigdbr_10.0.2              org.Hs.eg.db_3.19.1        
+[10] AnnotationDbi_1.66.0        clusterProfiler_4.12.6      multtest_2.60.0            
+[13] metap_1.12                  scater_1.32.1               scuttle_1.14.0             
+[16] destiny_3.18.0              circlize_0.4.16             muscat_1.18.0              
+[19] viridis_0.6.5               viridisLite_0.4.2           lubridate_1.9.4            
+[22] forcats_1.0.0               stringr_1.5.1               purrr_1.0.4                
+[25] readr_2.1.5                 tidyr_1.3.1                 tibble_3.2.1               
+[28] tidyverse_2.0.0             dplyr_1.1.4                 SingleCellExperiment_1.26.0
+[31] SummarizedExperiment_1.34.0 Biobase_2.64.0              GenomicRanges_1.56.2       
+[34] GenomeInfoDb_1.40.1         IRanges_2.38.1              S4Vectors_0.42.1           
+[37] BiocGenerics_0.50.0         MatrixGenerics_1.16.0       matrixStats_1.5.0          
+[40] pheatmap_1.0.12             ggpubr_0.6.0                ggplot2_3.5.2              
+[43] Seurat_5.2.1                SeuratObject_5.0.2          sp_2.2-0                   
+[46] runSeurat3_0.1.0            ExploreSCdataSeurat3_0.1.0 
+
+loaded via a namespace (and not attached):
+  [1] igraph_2.1.4              ica_1.0-3                 plotly_4.10.4            
+  [4] Formula_1.2-5             zlibbioc_1.50.0           tidyselect_1.2.1         
+  [7] bit_4.6.0                 doParallel_1.0.17         clue_0.3-66              
+ [10] lattice_0.22-7            rjson_0.2.23              blob_1.2.4               
+ [13] S4Arrays_1.4.1            pbkrtest_0.5.3            parallel_4.4.0           
+ [16] png_0.1-8                 plotrix_3.8-4             cli_3.6.4                
+ [19] ggplotify_0.1.2           goftest_1.2-3             VIM_6.2.2                
+ [22] variancePartition_1.34.0  BiocNeighbors_1.22.0      shadowtext_0.1.4         
+ [25] uwot_0.2.3                curl_6.2.2                tidytree_0.4.6           
+ [28] mime_0.13                 evaluate_1.0.3            ComplexHeatmap_2.20.0    
+ [31] stringi_1.8.7             backports_1.5.0           lmerTest_3.1-3           
+ [34] qqconf_1.3.2              httpuv_1.6.15             magrittr_2.0.3           
+ [37] rappdirs_0.3.3            splines_4.4.0             ggraph_2.2.1             
+ [40] sctransform_0.4.1         ggbeeswarm_0.7.2          DBI_1.2.3                
+ [43] jquerylib_0.1.4           smoother_1.3              withr_3.0.2              
+ [46] git2r_0.36.2              corpcor_1.6.10            reformulas_0.4.0         
+ [49] class_7.3-23              rprojroot_2.0.4           lmtest_0.9-40            
+ [52] tidygraph_1.3.1           formatR_1.14              colourpicker_1.3.0       
+ [55] htmlwidgets_1.6.4         fs_1.6.6                  ggrepel_0.9.6            
+ [58] labeling_0.4.3            fANCOVA_0.6-1             SparseArray_1.4.8        
+ [61] DESeq2_1.44.0             ranger_0.17.0             DEoptimR_1.1-3-1         
+ [64] reticulate_1.42.0         hexbin_1.28.5             zoo_1.8-14               
+ [67] XVector_0.44.0            knitr_1.50                ggplot.multistats_1.0.1  
+ [70] UCSC.utils_1.0.0          RhpcBLASctl_0.23-42       timechange_0.3.0         
+ [73] foreach_1.5.2             patchwork_1.3.0           caTools_1.18.3           
+ [76] data.table_1.17.0         ggtree_3.12.0             R.oo_1.27.0              
+ [79] RSpectra_0.16-2           irlba_2.3.5.1             fastDummies_1.7.5        
+ [82] gridGraphics_0.5-1        lazyeval_0.2.2            yaml_2.3.10              
+ [85] survival_3.8-3            scattermore_1.2           crayon_1.5.3             
+ [88] RcppAnnoy_0.0.22          RColorBrewer_1.1-3        progressr_0.15.1         
+ [91] tweenr_2.0.3              later_1.4.2               ggridges_0.5.6           
+ [94] codetools_0.2-20          GlobalOptions_0.1.2       aod_1.3.3                
+ [97] KEGGREST_1.44.1           Rtsne_0.17                shape_1.4.6.1            
+[100] limma_3.60.6              pkgconfig_2.0.3           TMB_1.9.17               
+[103] spatstat.univar_3.1-2     mathjaxr_1.6-0            EnvStats_3.0.0           
+[106] aplot_0.2.5               scatterplot3d_0.3-44      ape_5.8-1                
+[109] spatstat.sparse_3.1-0     xtable_1.8-4              car_3.1-3                
+[112] plyr_1.8.9                httr_1.4.7                rbibutils_2.3            
+[115] tools_4.4.0               globals_0.16.3            beeswarm_0.4.0           
+[118] broom_1.0.8               nlme_3.1-168              lambda.r_1.2.4           
+[121] assertthat_0.2.1          lme4_1.1-37               digest_0.6.37            
+[124] numDeriv_2016.8-1.1       Matrix_1.7-3              farver_2.1.2             
+[127] tzdb_0.5.0                remaCor_0.0.18            reshape2_1.4.4           
+[130] yulab.utils_0.2.0         glue_1.8.0                cachem_1.1.0             
+[133] polyclip_1.10-7           generics_0.1.3            Biostrings_2.72.1        
+[136] mvtnorm_1.3-3             parallelly_1.43.0         mnormt_2.1.1             
+[139] statmod_1.5.0             RcppHNSW_0.6.0            ScaledMatrix_1.12.0      
+[142] carData_3.0-5             minqa_1.2.8               pbapply_1.7-2            
+[145] httr2_1.1.2               spam_2.11-1               gson_0.1.0               
+[148] graphlayouts_1.2.2        gtools_3.9.5              ggsignif_0.6.4           
+[151] RcppEigen_0.3.4.0.2       shiny_1.10.0              GenomeInfoDbData_1.2.12  
+[154] glmmTMB_1.1.11            R.utils_2.13.0            memoise_2.0.1            
+[157] rmarkdown_2.29            scales_1.3.0              R.methodsS3_1.8.2        
+[160] future_1.40.0             RANN_2.6.2                Cairo_1.6-2              
+[163] spatstat.data_3.1-6       rstudioapi_0.17.1         cluster_2.1.8.1          
+[166] mutoss_0.1-13             spatstat.utils_3.1-3      hms_1.1.3                
+[169] fitdistrplus_1.2-2        munsell_0.5.1             cowplot_1.1.3            
+[172] colorspace_2.1-1          rlang_1.1.6               DelayedMatrixStats_1.26.0
+[175] sparseMatrixStats_1.16.0  xts_0.14.1                dotCall64_1.2            
+[178] shinydashboard_0.7.2      ggforce_0.4.2             laeken_0.5.3             
+[181] mgcv_1.9-3                xfun_0.52                 e1071_1.7-16             
+[184] TH.data_1.1-3             iterators_1.0.14          abind_1.4-8              
+[187] GOSemSim_2.30.2           treeio_1.28.0             futile.options_1.0.1     
+[190] bitops_1.0-9              Rdpack_2.6.4              promises_1.3.2           
+[193] scatterpie_0.2.4          RSQLite_2.3.9             qvalue_2.36.0            
+[196] sandwich_3.1-1            fgsea_1.30.0              DelayedArray_0.30.1      
+[199] proxy_0.4-27              GO.db_3.19.1              compiler_4.4.0           
+[202] prettyunits_1.2.0         boot_1.3-31               beachmat_2.20.0          
+[205] listenv_0.9.1             Rcpp_1.0.14               edgeR_4.2.2              
+[208] workflowr_1.7.1           BiocSingular_1.20.0       tensor_1.5               
+[211] MASS_7.3-65               progress_1.2.3            BiocParallel_1.38.0      
+[214] babelgene_22.9            spatstat.random_3.3-3     R6_2.6.1                 
+[217] fastmap_1.2.0             multcomp_1.4-28           fastmatch_1.1-6          
+[220] rstatix_0.7.2             vipor_0.4.7               TTR_0.24.4               
+[223] ROCR_1.0-11               TFisher_0.2.0             rsvd_1.0.5               
+[226] vcd_1.4-13                nnet_7.3-20               gtable_0.3.6             
+[229] KernSmooth_2.23-26        miniUI_0.1.1.1            deldir_2.0-4             
+[232] htmltools_0.5.8.1         ggthemes_5.1.0            bit64_4.6.0-1            
+[235] spatstat.explore_3.4-2    lifecycle_1.0.4           blme_1.0-6               
+[238] nloptr_2.2.1              sass_0.4.10               vctrs_0.6.5              
+[241] robustbase_0.99-4-1       spatstat.geom_3.3-6       sn_2.1.1                 
+[244] ggfun_0.1.8               future.apply_1.11.3       bslib_0.9.0              
+[247] pillar_1.10.2             gplots_3.2.0              pcaMethods_1.96.0        
+[250] locfit_1.5-9.12           jsonlite_2.0.0            GetoptLong_1.0.5         </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.0 (2024-04-24)
+Platform: x86_64-apple-darwin20
+Running under: macOS Ventura 13.7.5
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Europe/Zurich
+tzcode source: internal
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] NCmisc_1.2.0                VennDiagram_1.7.3           futile.logger_1.4.3        
+ [4] ggupset_0.4.1               gridExtra_2.3               DOSE_3.30.5                
+ [7] enrichplot_1.24.4           msigdbr_10.0.2              org.Hs.eg.db_3.19.1        
+[10] AnnotationDbi_1.66.0        clusterProfiler_4.12.6      multtest_2.60.0            
+[13] metap_1.12                  scater_1.32.1               scuttle_1.14.0             
+[16] destiny_3.18.0              circlize_0.4.16             muscat_1.18.0              
+[19] viridis_0.6.5               viridisLite_0.4.2           lubridate_1.9.4            
+[22] forcats_1.0.0               stringr_1.5.1               purrr_1.0.4                
+[25] readr_2.1.5                 tidyr_1.3.1                 tibble_3.2.1               
+[28] tidyverse_2.0.0             dplyr_1.1.4                 SingleCellExperiment_1.26.0
+[31] SummarizedExperiment_1.34.0 Biobase_2.64.0              GenomicRanges_1.56.2       
+[34] GenomeInfoDb_1.40.1         IRanges_2.38.1              S4Vectors_0.42.1           
+[37] BiocGenerics_0.50.0         MatrixGenerics_1.16.0       matrixStats_1.5.0          
+[40] pheatmap_1.0.12             ggpubr_0.6.0                ggplot2_3.5.2              
+[43] Seurat_5.2.1                SeuratObject_5.0.2          sp_2.2-0                   
+[46] runSeurat3_0.1.0            ExploreSCdataSeurat3_0.1.0 
+
+loaded via a namespace (and not attached):
+  [1] igraph_2.1.4              ica_1.0-3                 plotly_4.10.4            
+  [4] Formula_1.2-5             zlibbioc_1.50.0           tidyselect_1.2.1         
+  [7] bit_4.6.0                 doParallel_1.0.17         clue_0.3-66              
+ [10] lattice_0.22-7            rjson_0.2.23              blob_1.2.4               
+ [13] S4Arrays_1.4.1            pbkrtest_0.5.3            parallel_4.4.0           
+ [16] png_0.1-8                 plotrix_3.8-4             cli_3.6.4                
+ [19] ggplotify_0.1.2           goftest_1.2-3             VIM_6.2.2                
+ [22] variancePartition_1.34.0  BiocNeighbors_1.22.0      shadowtext_0.1.4         
+ [25] uwot_0.2.3                curl_6.2.2                tidytree_0.4.6           
+ [28] mime_0.13                 evaluate_1.0.3            ComplexHeatmap_2.20.0    
+ [31] stringi_1.8.7             backports_1.5.0           lmerTest_3.1-3           
+ [34] qqconf_1.3.2              httpuv_1.6.15             magrittr_2.0.3           
+ [37] rappdirs_0.3.3            splines_4.4.0             ggraph_2.2.1             
+ [40] sctransform_0.4.1         ggbeeswarm_0.7.2          DBI_1.2.3                
+ [43] jquerylib_0.1.4           smoother_1.3              withr_3.0.2              
+ [46] git2r_0.36.2              corpcor_1.6.10            reformulas_0.4.0         
+ [49] class_7.3-23              rprojroot_2.0.4           lmtest_0.9-40            
+ [52] tidygraph_1.3.1           formatR_1.14              colourpicker_1.3.0       
+ [55] htmlwidgets_1.6.4         fs_1.6.6                  ggrepel_0.9.6            
+ [58] labeling_0.4.3            fANCOVA_0.6-1             SparseArray_1.4.8        
+ [61] DESeq2_1.44.0             ranger_0.17.0             DEoptimR_1.1-3-1         
+ [64] reticulate_1.42.0         hexbin_1.28.5             zoo_1.8-14               
+ [67] XVector_0.44.0            knitr_1.50                ggplot.multistats_1.0.1  
+ [70] UCSC.utils_1.0.0          RhpcBLASctl_0.23-42       timechange_0.3.0         
+ [73] foreach_1.5.2             patchwork_1.3.0           caTools_1.18.3           
+ [76] data.table_1.17.0         ggtree_3.12.0             R.oo_1.27.0              
+ [79] RSpectra_0.16-2           irlba_2.3.5.1             fastDummies_1.7.5        
+ [82] gridGraphics_0.5-1        lazyeval_0.2.2            yaml_2.3.10              
+ [85] survival_3.8-3            scattermore_1.2           crayon_1.5.3             
+ [88] RcppAnnoy_0.0.22          RColorBrewer_1.1-3        progressr_0.15.1         
+ [91] tweenr_2.0.3              later_1.4.2               ggridges_0.5.6           
+ [94] codetools_0.2-20          GlobalOptions_0.1.2       aod_1.3.3                
+ [97] KEGGREST_1.44.1           Rtsne_0.17                shape_1.4.6.1            
+[100] limma_3.60.6              pkgconfig_2.0.3           TMB_1.9.17               
+[103] spatstat.univar_3.1-2     mathjaxr_1.6-0            EnvStats_3.0.0           
+[106] aplot_0.2.5               scatterplot3d_0.3-44      ape_5.8-1                
+[109] spatstat.sparse_3.1-0     xtable_1.8-4              car_3.1-3                
+[112] plyr_1.8.9                httr_1.4.7                rbibutils_2.3            
+[115] tools_4.4.0               globals_0.16.3            beeswarm_0.4.0           
+[118] broom_1.0.8               nlme_3.1-168              lambda.r_1.2.4           
+[121] assertthat_0.2.1          lme4_1.1-37               digest_0.6.37            
+[124] numDeriv_2016.8-1.1       Matrix_1.7-3              farver_2.1.2             
+[127] tzdb_0.5.0                remaCor_0.0.18            reshape2_1.4.4           
+[130] yulab.utils_0.2.0         glue_1.8.0                cachem_1.1.0             
+[133] polyclip_1.10-7           generics_0.1.3            Biostrings_2.72.1        
+[136] mvtnorm_1.3-3             parallelly_1.43.0         mnormt_2.1.1             
+[139] statmod_1.5.0             RcppHNSW_0.6.0            ScaledMatrix_1.12.0      
+[142] carData_3.0-5             minqa_1.2.8               pbapply_1.7-2            
+[145] httr2_1.1.2               spam_2.11-1               gson_0.1.0               
+[148] graphlayouts_1.2.2        gtools_3.9.5              ggsignif_0.6.4           
+[151] RcppEigen_0.3.4.0.2       shiny_1.10.0              GenomeInfoDbData_1.2.12  
+[154] glmmTMB_1.1.11            R.utils_2.13.0            memoise_2.0.1            
+[157] rmarkdown_2.29            scales_1.3.0              R.methodsS3_1.8.2        
+[160] future_1.40.0             RANN_2.6.2                Cairo_1.6-2              
+[163] spatstat.data_3.1-6       rstudioapi_0.17.1         cluster_2.1.8.1          
+[166] mutoss_0.1-13             spatstat.utils_3.1-3      hms_1.1.3                
+[169] fitdistrplus_1.2-2        munsell_0.5.1             cowplot_1.1.3            
+[172] colorspace_2.1-1          rlang_1.1.6               DelayedMatrixStats_1.26.0
+[175] sparseMatrixStats_1.16.0  xts_0.14.1                dotCall64_1.2            
+[178] shinydashboard_0.7.2      ggforce_0.4.2             laeken_0.5.3             
+[181] mgcv_1.9-3                xfun_0.52                 e1071_1.7-16             
+[184] TH.data_1.1-3             iterators_1.0.14          abind_1.4-8              
+[187] GOSemSim_2.30.2           treeio_1.28.0             futile.options_1.0.1     
+[190] bitops_1.0-9              Rdpack_2.6.4              promises_1.3.2           
+[193] scatterpie_0.2.4          RSQLite_2.3.9             qvalue_2.36.0            
+[196] sandwich_3.1-1            fgsea_1.30.0              DelayedArray_0.30.1      
+[199] proxy_0.4-27              GO.db_3.19.1              compiler_4.4.0           
+[202] prettyunits_1.2.0         boot_1.3-31               beachmat_2.20.0          
+[205] listenv_0.9.1             Rcpp_1.0.14               edgeR_4.2.2              
+[208] workflowr_1.7.1           BiocSingular_1.20.0       tensor_1.5               
+[211] MASS_7.3-65               progress_1.2.3            BiocParallel_1.38.0      
+[214] babelgene_22.9            spatstat.random_3.3-3     R6_2.6.1                 
+[217] fastmap_1.2.0             multcomp_1.4-28           fastmatch_1.1-6          
+[220] rstatix_0.7.2             vipor_0.4.7               TTR_0.24.4               
+[223] ROCR_1.0-11               TFisher_0.2.0             rsvd_1.0.5               
+[226] vcd_1.4-13                nnet_7.3-20               gtable_0.3.6             
+[229] KernSmooth_2.23-26        miniUI_0.1.1.1            deldir_2.0-4             
+[232] htmltools_0.5.8.1         ggthemes_5.1.0            bit64_4.6.0-1            
+[235] spatstat.explore_3.4-2    lifecycle_1.0.4           blme_1.0-6               
+[238] nloptr_2.2.1              sass_0.4.10               vctrs_0.6.5              
+[241] robustbase_0.99-4-1       spatstat.geom_3.3-6       sn_2.1.1                 
+[244] ggfun_0.1.8               future.apply_1.11.3       bslib_0.9.0              
+[247] pillar_1.10.2             gplots_3.2.0              pcaMethods_1.96.0        
+[250] locfit_1.5-9.12           jsonlite_2.0.0            GetoptLong_1.0.5         </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

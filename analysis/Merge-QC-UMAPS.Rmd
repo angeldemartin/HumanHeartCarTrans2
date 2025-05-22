@@ -1,0 +1,349 @@
+---
+title: "HumanHeartCarTrans2"
+author: "A.DeMartin"
+date: "2025-02-28"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+#start pre-processing
+
+## load files and merge
+```{r load files, eval=FALSE, include=TRUE}
+### load and merge all 
+basedir <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/seurat files/"
+fileNamList <- list.files(path = basedir)
+
+for(i in 1:length(fileNamList)){
+  seuratS <- readRDS(paste0(basedir, fileNamList[i]))
+  seuratS@assays$RNA@layers$scale.data <- NULL ##remove scale data slot to reduce size of objects
+  if(exists("seuratM")){
+    seuratM <- merge(x = seuratM, y = seuratS)
+    cat("Merged", i, "of", length(fileNamList), "files - Total cells:", ncol(seuratM), "\n")
+  }else{
+    seuratM <- seuratS
+    cat("Initialized with first Seurat object:", fileNamList[i], "\n")
+  }
+}
+
+remove(seuratS)
+table(seuratM$dataset)
+table(seuratM$orig.ident)
+
+### exclude file "336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1" ?
+#seuratMfil <- subset(seuratM, dataset == "336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1", invert = TRUE)
+#table(seuratM$dataset)
+#table(seuratM$orig.ident)
+
+### note visit3 of CarTransPat12 is missing - sample/data quality not sufficient
+
+#join layers
+seuratM <- JoinLayers(seuratM)
+
+#rerun seurat
+seuratM <- NormalizeData (object = seuratM)
+seuratM <- FindVariableFeatures(object = seuratM)
+seuratM <- ScaleData(object = seuratM, verbose = TRUE)
+seuratM <- RunPCA(object=seuratM, npcs = 30, verbose = FALSE)
+#seuratM <- RunTSNE(object=seuratM, reduction="pca", dims = 1:20)
+seuratM <- RunUMAP(object=seuratM, reduction="pca", dims = 1:20)
+seuratM <- FindNeighbors(object = seuratM, reduction = "pca", dims= 1:20)
+
+res <- c(0.25, 0.6, 0.8, 0.4)
+for (i in 1:length(res)) {
+  seuratM <- FindClusters(object = seuratM, resolution = res[i], random.seed = 1234)
+}
+```
+
+## save object
+```{r save merged seurat object, eval=FALSE, include=TRUE}
+### save seurat object
+saveRDS(seuratM, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds")
+```
+
+# explore merged seurat object
+
+## load object
+```{r load merged object}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
+seuratM <- readRDS(fileNam)
+table(seuratM$dataset)
+table(seuratM$RNA_snn_res.0.25)
+table(seuratM$orig.ident)
+```
+
+
+## add metadata
+```{r add metadata}
+# add any type of metadata
+## patient
+seuratM$patient <- "pat_nr"
+seuratM$patient[grepl("HTx001|EMB001", seuratM$dataset)] <- "CarTransPat01"
+seuratM$patient[grepl("HTx002|EMB002", seuratM$dataset)] <- "CarTransPat02"
+seuratM$patient[grepl("HTx003|EMB003", seuratM$dataset)] <- "CarTransPat03"
+seuratM$patient[grepl("HTx004|EMB004", seuratM$dataset)] <- "CarTransPat04"
+seuratM$patient[grepl("HTx005|EMB005", seuratM$dataset)] <- "CarTransPat05"
+seuratM$patient[grepl("HTx006|EMB006", seuratM$dataset)] <- "CarTransPat06"
+seuratM$patient[grepl("HTx007|EMB007", seuratM$dataset)] <- "CarTransPat07"
+seuratM$patient[grepl("HTx008|EMB008", seuratM$dataset)] <- "CarTransPat08"
+seuratM$patient[grepl("HTx010|EMB010", seuratM$dataset)] <- "CarTransPat10"
+seuratM$patient[grepl("HTx011|EMB011", seuratM$dataset)] <- "CarTransPat11"
+seuratM$patient[grepl("HTx012|EMB012", seuratM$dataset)] <- "CarTransPat12"
+seuratM$patient[grepl("HTx013|EMB013", seuratM$dataset)] <- "CarTransPat13"
+seuratM$patient[grepl("HTx014|EMB014", seuratM$dataset)] <- "CarTransPat14"
+seuratM$patient[grepl("HTx015|EMB015", seuratM$dataset)] <- "CarTransPat15"
+seuratM$patient[grepl("HTx016|EMB016", seuratM$dataset)] <- "CarTransPat16"
+seuratM$patient[grepl("HTx018|EMB018", seuratM$dataset)] <- "CarTransPat18"
+
+seuratM$patient[which(seuratM$dataset == "o28576_1_08-8_20220525_Hu_nucseq_Graz_8_HH_GEM")] <- "HH01"
+seuratM$patient[which(seuratM$dataset == "o28576_1_10-10_20220525_Hu_nucseq_Graz_10_HH_GEM")] <- "HH02"
+seuratM$patient[which(seuratM$dataset == "o28576_1_11-11_20220525_Hu_nucseq_Graz_11_HH_GEM")] <- "HH03"
+seuratM$patient[which(seuratM$dataset == "o28576_1_12-12_20220525_Hu_nucseq_Graz_12_HH_GEM")] <- "HH04"
+seuratM$patient[which(seuratM$dataset =="o292731_1-1_20220818_Hu_nucseq_Graz_9_HH_GEM")] <- "HH05"
+seuratM$patient[which(seuratM$dataset =="o292731_2-2_20220818_Hu_nucseq_Graz_13_HH_GEM")] <- "HH06"
+seuratM$patient[which(seuratM$dataset == "o294781_01-1_20220912_Hu_nucseq_Graz_21_HH_GEM")] <- "HH07"
+seuratM$patient[which(seuratM$dataset == "o294781_02-2_20220912_Hu_nucseq_Graz_22_HH_GEM")] <- "HH08"
+seuratM$patient[which(seuratM$dataset == "o294781_03-3_20220912_Hu_nucseq_Graz_23_HH_GEM")] <- "HH09"
+seuratM$patient[which(seuratM$dataset == "o294781_04-4_20220912_Hu_nucseq_Graz_24_HH_GEM")] <- "HH10"
+table(seuratM$patient)
+ordpatients <- c("HH01", "HH02", "HH03", "HH04", "HH05", "HH06", "HH07", "HH08", "HH09", "HH10", 
+                 "CarTransPat01", "CarTransPat02", "CarTransPat03", "CarTransPat04", "CarTransPat05", "CarTransPat06", "CarTransPat07", "CarTransPat08",
+                 "CarTransPat10", "CarTransPat11", "CarTransPat12", "CarTransPat13", "CarTransPat14", "CarTransPat15", "CarTransPat16", "CarTransPat18")
+Idents(seuratM) <- seuratM$patient
+seuratM$patient <- factor(seuratM$patient, levels=ordpatients)
+Idents(seuratM) <- seuratM$patient
+table(seuratM$patient)
+
+### diseaseCond
+seuratM$diseaseCond <- "diseaseCond"
+seuratM$diseaseCond[grepl("V1", seuratM$dataset)] <- "visit1"
+seuratM$diseaseCond[grepl("V2|353921_12-12_20240515_Hu_nucseq_USZ_EMB010_V1_2", seuratM$dataset)] <- "visit2"
+seuratM$diseaseCond[grepl("V3", seuratM$dataset)] <- "visit3"
+seuratM$diseaseCond[grepl("HH", seuratM$dataset)] <- "healthy"
+seuratM$diseaseCond[grepl("RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002", seuratM$dataset)] <- "explant"
+table(seuratM$diseaseCond)
+orddiseaseCond <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+Idents(seuratM) <- seuratM$diseaseCond
+seuratM$diseaseCond <- factor(seuratM$diseaseCond, levels=orddiseaseCond)
+Idents(seuratM) <- seuratM$diseaseCond
+table(seuratM$diseaseCond)
+
+#### cluster_name
+seuratM$clusterName <- "clusterName"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "0" )] <- "Fb1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "1" )] <- "BEC1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "2" )] <- "PerivFb1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "3" )] <- "Fb2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "4" )] <- "CM"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "5" )] <- "Mph1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "6" )] <- "Mph2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "7" )] <- "Tcell1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "8" )] <- "VSMC"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "9" )] <- "BEC2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "10" )] <- "BEC3"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "11" )] <- "Mph3"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "12" )] <- "Fb3"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "13" )] <- "NC"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "14" )] <- "Baror"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "15" )] <- "Tcell2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "16" )] <- "LEC"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "17" )] <- "PerivFb2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "18" )] <- "Adipoc"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "19" )] <- "Mastcell"
+table(seuratM$clusterName)
+table(seuratM$RNA_snn_res.0.4)
+
+###order
+Idents(seuratM) <- seuratM$clusterName
+seuratM$clusterName <- factor(seuratM$clusterName, levels=c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Mph3","Tcell1","Tcell2","Mastcell"))
+Idents(seuratM) <- seuratM$clusterName
+table(seuratM$clusterName)
+
+###combined slots
+seuratM$patient_diseaseCond <- paste0(seuratM$patient, '_', seuratM$diseaseCond)
+table(seuratM$patient_diseaseCond)
+
+seuratM$patient_clusterName <- paste0(seuratM$patient, '_', seuratM$clusterName)
+table(seuratM$patient_clusterName)
+```
+
+##set color vectors 
+```{r set color vector}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","grey")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell", "Mph3")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## QC merged 
+```{r QC patient,  fig.height=10, fig.width=20}
+# Extract meta.data from the Seurat object
+meta.data <- seuratM@meta.data
+# Create the density plot
+ptotalpat <- ggplot(data = meta.data, aes(x = total, color = patient, fill = patient)) +
+  geom_density(alpha = 0.2) +
+  #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab("density") +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+pdetectedpat <- ggplot(data = meta.data, aes(x = detected, color = patient, fill = patient)) +
+  geom_density(alpha = 0.2) +
+ #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab("density") +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+# Return the plots as a list
+list(ptotalpat, pdetectedpat)
+```
+
+```{r QC dataset, fig.height=20, fig.width=40}
+# Extract meta.data from the Seurat object
+meta.data <- seuratM@meta.data
+# Create the density plot
+ptotalpat <- ggplot(data = meta.data, aes(x = total, color = dataset, fill = dataset)) +
+  geom_density(alpha = 0.2) +
+  #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab("density") +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+pdetectedpat <- ggplot(data = meta.data, aes(x = detected, color = dataset, fill = dataset)) +
+  geom_density(alpha = 0.2) +
+ #scale_fill_manual(values = colpat) +
+  #scale_color_manual(values = colpat) +
+  theme_classic() +
+  scale_x_log10() +
+  ylab("density") +
+  geom_vline(xintercept = 100) +
+  theme(legend.text = element_text(size = 10), legend.title = element_text(size = 10))
+
+# Return the plots as a list
+list(ptotalpat, pdetectedpat)
+```
+
+```{r cellnumber circle dataset, fig.height=20, fig.width=40}
+cell_count <- data.frame(table(seuratM$dataset))
+colnames(cell_count) <- c("dataset", "Freq")
+hsize <- 1.5
+
+ggplot(cell_count, aes(x = hsize, y = Freq, fill = dataset)) +
+  #scale_fill_manual(values = colpat2) +
+  geom_col(color = "white") +
+  coord_polar(theta = "y") +
+  xlim(c(0.2, hsize + 0.5)) +
+  theme_void() +
+  ggtitle("cell number") +
+  theme(plot.title = element_text(hjust = 0.5, size = 10), legend.text = element_text(size = 10), legend.title = element_text(size = 10)) +
+  geom_text(aes(label = Freq), position = position_stack(vjust = 0.5), size = 10)
+```
+
+## plot umaps
+```{r umap}
+Idents(seuratM) <- seuratM$RNA_snn_res.0.25
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, raster = FALSE, label = TRUE) 
+
+Idents(seuratM) <- seuratM$RNA_snn_res.0.4
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, raster = FALSE, label = TRUE) 
+
+Idents(seuratM) <- seuratM$RNA_snn_res.0.6
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, raster = FALSE, label = TRUE) 
+
+Idents(seuratM) <- seuratM$patient
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, raster = FALSE) + theme(legend.position = "null")
+
+Idents(seuratM) <- seuratM$clusterName
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = colclusterName, raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = colclusterName, raster = FALSE) + theme(legend.position = "null")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = colclusterName, raster = FALSE, label = TRUE) + theme(legend.position = "null")
+
+Idents(seuratM) <- seuratM$diseaseCond
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, shuffle = TRUE, raster=FALSE)
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, shuffle = TRUE, raster = FALSE) + theme(legend.position = "null")
+
+coldiseaseCond <- c("#dfc27d","lightgrey","lightgrey","lightgrey","lightgrey")
+names(coldiseaseCond) <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "healthy", raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "healthy", raster = FALSE) + theme(legend.position = "null")
+
+coldiseaseCond <- c("lightgrey","#BE3144","lightgrey","lightgrey","lightgrey")
+names(coldiseaseCond) <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "explant", raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "explant", raster = FALSE) + theme(legend.position = "null")
+
+coldiseaseCond <- c("lightgrey","lightgrey","#202547","lightgrey","lightgrey")
+names(coldiseaseCond) <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit1", raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit1", raster = FALSE) + theme(legend.position = "null")
+
+coldiseaseCond <- c("lightgrey","lightgrey","lightgrey","#355C7D","lightgrey")
+names(coldiseaseCond) <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit2", raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit2", raster = FALSE) + theme(legend.position = "null")
+
+coldiseaseCond <- c("lightgrey","lightgrey","lightgrey","lightgrey","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit3", raster = FALSE) 
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = coldiseaseCond, order = "visit3", raster = FALSE) + theme(legend.position = "null")
+
+##reset coldiseaseCond
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## session info
+```{r date and session info}
+date()
+sessionInfo()
+```
