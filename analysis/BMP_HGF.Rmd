@@ -62,8 +62,20 @@ coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
 names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
 ```
 
-## BMP features
+## BMP features 
 ```{r features}
+genes <- data.frame(gene=rownames(seuratM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratM, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE) +
+    theme(legend.position="right")
+  plot(p)
+})
+
 FeaturePlot(seuratM, features = "ENSG00000125378.BMP4", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
 FeaturePlot(seuratM, features = "ENSG00000112175.BMP5", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
 FeaturePlot(seuratM, features = "ENSG00000125845.BMP2", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
@@ -80,6 +92,17 @@ FeaturePlot(seuratM, features = "ENSG00000180875.GREM2", pt.size = 0.1, cols = c
 
 FeaturePlot(seuratM, features = "ENSG00000019991.HGF", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
 FeaturePlot(seuratM, features = "ENSG00000105976.MET", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
+
+FeaturePlot(seuratM, features = "ENSG00000115602.IL1RL1", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
+```
+
+## BMP features ordered
+```{r features ordered}
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratM, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE, order=TRUE) +
+    theme(legend.position="right")
+  plot(p)
+})
 ```
 
 ## dotplot 

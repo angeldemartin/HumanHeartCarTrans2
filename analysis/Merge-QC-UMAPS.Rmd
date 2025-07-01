@@ -69,13 +69,6 @@ remove(seuratS)
 table(seuratM$dataset)
 table(seuratM$orig.ident)
 
-### exclude file "336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1" ?
-#seuratMfil <- subset(seuratM, dataset == "336431_10-10_20231129_Hu_nucseq_USZ_EMB005_V1", invert = TRUE)
-#table(seuratM$dataset)
-#table(seuratM$orig.ident)
-
-### note visit3 of CarTransPat12 is missing - sample/data quality not sufficient
-
 #join layers
 seuratM <- JoinLayers(seuratM)
 
@@ -84,7 +77,7 @@ seuratM <- NormalizeData (object = seuratM)
 seuratM <- FindVariableFeatures(object = seuratM)
 seuratM <- ScaleData(object = seuratM, verbose = TRUE)
 seuratM <- RunPCA(object=seuratM, npcs = 30, verbose = FALSE)
-#seuratM <- RunTSNE(object=seuratM, reduction="pca", dims = 1:20)
+seuratM <- RunTSNE(object=seuratM, reduction="pca", dims = 1:20)
 seuratM <- RunUMAP(object=seuratM, reduction="pca", dims = 1:20)
 seuratM <- FindNeighbors(object = seuratM, reduction = "pca", dims= 1:20)
 
@@ -153,6 +146,8 @@ seuratM$patient <- factor(seuratM$patient, levels=ordpatients)
 Idents(seuratM) <- seuratM$patient
 table(seuratM$patient)
 
+### note visit3 of CarTransPat12 is missing - sample/data quality not sufficient
+
 ### diseaseCond
 seuratM$diseaseCond <- "diseaseCond"
 seuratM$diseaseCond[grepl("V1", seuratM$dataset)] <- "visit1"
@@ -170,31 +165,30 @@ table(seuratM$diseaseCond)
 #### cluster_name
 seuratM$clusterName <- "clusterName"
 seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "0" )] <- "Fb1"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "1" )] <- "BEC1"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "2" )] <- "PerivFb1"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "3" )] <- "Fb2"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "4" )] <- "CM"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "5" )] <- "Mph1"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "6" )] <- "Mph2"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "7" )] <- "Tcell1"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "8" )] <- "VSMC"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "9" )] <- "BEC2"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "10" )] <- "BEC3"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "11" )] <- "Mph3"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "12" )] <- "Fb3"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "13" )] <- "NC"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "14" )] <- "Baror"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "1" )] <- "PerivFb1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "2" )] <- "BEC1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "3" )] <- "Mph1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "4" )] <- "Fb2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "5" )] <- "CM"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "6" )] <- "Tcell1"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "7" )] <- "BEC2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "8" )] <- "BEC3"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "9" )] <- "VSMC"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "10" )] <- "Fb3"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "11" )] <- "Mph2"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "12" )] <- "NC"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "13" )] <- "Baror"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "14" )] <- "PerivFb2"
 seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "15" )] <- "Tcell2"
 seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "16" )] <- "LEC"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "17" )] <- "PerivFb2"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "18" )] <- "Adipoc"
-seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "19" )] <- "Mastcell"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "17" )] <- "Adipoc"
+seuratM$clusterName[which(seuratM$RNA_snn_res.0.4 %in% "18" )] <- "Mastcell"
 table(seuratM$clusterName)
 table(seuratM$RNA_snn_res.0.4)
 
 ###order
 Idents(seuratM) <- seuratM$clusterName
-seuratM$clusterName <- factor(seuratM$clusterName, levels=c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Mph3","Tcell1","Tcell2","Mastcell"))
+seuratM$clusterName <- factor(seuratM$clusterName, levels=c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell"))
 Idents(seuratM) <- seuratM$clusterName
 table(seuratM$clusterName)
 
@@ -208,8 +202,8 @@ table(seuratM$patient_clusterName)
 
 ##set color vectors 
 ```{r set color vector}
-colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","grey")
-names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell", "Mph3")
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
 
 coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
 names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
