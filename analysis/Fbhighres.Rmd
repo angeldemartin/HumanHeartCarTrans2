@@ -111,20 +111,20 @@ table(seuratAllFb$orig.ident)
 #### cluster_name_Fb
 seuratAllFb$clusterNameAllFb <- "clusterNameAllFb"
 seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "0" )] <- "Fb1"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "1" )] <- "PerivFb1"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "2" )] <- "Fb2"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "3" )] <- "Fb3"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "4" )] <- "VSMC"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "1" )] <- "Fb2"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "2" )] <- "Fb3"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "3" )] <- "PerivFb1"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "4" )] <- "PerivFb2"
 seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "5" )] <- "Fb4"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "6" )] <- "PerivFb2"
-seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "7" )] <- "PerivFb3"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "6" )] <- "VSMC"
+seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "7" )] <- "Fb5"
 
 table(seuratAllFb$clusterNameAllFb)
 table(seuratAllFb$RNA_snn_res.0.25)
 
 ###order
 Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
-seuratAllFb$clusterNameAllFb <- factor(seuratAllFb$clusterNameAllFb, levels=c("Fb1", "Fb2", "Fb3", "Fb4", "PerivFb1", "PerivFb2", "PerivFb3", "VSMC"))
+seuratAllFb$clusterNameAllFb <- factor(seuratAllFb$clusterNameAllFb, levels=c("Fb1", "Fb2", "Fb3", "Fb4", "Fb5", "PerivFb1", "PerivFb2", "VSMC"))
 Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
 table(seuratAllFb$clusterNameAllFb)
 ```
@@ -170,6 +170,122 @@ write.table(markerGenes,
             quote=F,
             row.names=F,
             col.names=T)
+```
+
+## BMP features 
+```{r features}
+genes <- data.frame(gene=rownames(seuratAllFb)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratAllFb, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE) +
+    theme(legend.position="right")
+  plot(p)
+})
+```
+
+## BMP features ordered
+```{r features ordered}
+genes <- data.frame(gene=rownames(seuratAllFb)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratAllFb, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE, order=TRUE) +
+    theme(legend.position="right")
+  plot(p)
+})
+```
+
+##violin plots
+```{r}
+Idents(seuratAllFb) <- seuratAllFb$diseaseCond
+pList <- sapply(selGenes$gene, function(x){
+  p <- VlnPlot( object = seuratAllFb, features = x, pt.size = 1, cols=coldiseaseCond)
+  plot(p)
+})
+```
+
+##violin plots
+```{r}
+Idents(seuratAllFb) <- seuratAllFb$diseaseCond
+pList <- sapply(selGenes$gene, function(x){
+  p <- VlnPlot( object = seuratAllFb, features = x, pt.size = 0, cols=coldiseaseCond)
+  plot(p)
+})
+```
+
+## abundance plots
+### dataset
+```{r abundance dataset, fig.height=10, fig.width=10}
+order_keywords <- c("HH", "RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002", "V1", "V2","V3")
+files <- unique(seuratAllFb$dataset)
+ordered_files <- c()
+for (key in order_keywords) {
+  ordered_files <- c(ordered_files, files[grepl(key, files)])
+}
+
+###dataset
+datList <- NULL
+for(con in unique(seuratAllFb$dataset)){
+  seuratSub <- subset(seuratAllFb, dataset==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$clusterNameAllFb)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(dataset=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "dataset", y= "percent", fill = "Var1", palette = colAllFb, legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)
+```
+
+### patient_diseaseCond
+```{r abundance patient_diseaseCond, fig.height=8, fig.width=10}
+order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant")
+files <- unique(seuratAllFb$patient_diseaseCond)
+ordered_files <- c()
+for (key in order_keywords) {
+  ordered_files <- c(ordered_files, files[grepl(key, files)])
+}
+
+###patient_diseaseCond
+datList <- NULL
+for(con in unique(seuratAllFb$patient_diseaseCond)){
+  seuratSub <- subset(seuratAllFb, patient_diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$clusterNameAllFb)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(patient_diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "patient_diseaseCond", y= "percent", fill = "Var1", palette = colAllFb, legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)
+```
+
+### diseaseCond
+```{r abundance diseaseCond, fig.height=8, fig.width=10}
+orddiseaseCond <- c("healthy","visit1", "visit2" ,"visit3", "explant")
+
+###diseaseCond
+datList <- NULL
+for(con in unique(seuratAllFb$diseaseCond)){
+  seuratSub <- subset(seuratAllFb, diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$clusterNameAllFb)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "diseaseCond", y= "percent", fill = "Var1", palette = colAllFb, legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=orddiseaseCond)
 ```
 
 ## session info

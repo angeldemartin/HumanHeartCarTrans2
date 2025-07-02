@@ -1,0 +1,159 @@
+---
+title: "CMhighres"
+author: "A.DeMartin"
+date: "2025-07-01"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load object
+```{r load merged object, eval=FALSE, include=FALSE}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
+seuratM <- readRDS(fileNam)
+```
+
+## set color vectors 
+```{r set color vector}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
+
+coldiseaseCond <- c("#dfc27d","#202547","#355C7D","#779d8d", "#BE3144")
+names(coldiseaseCond) <- c("healthy", "visit1", "visit2", "visit3", "explant")
+```
+
+## subset CM
+```{r, eval=FALSE, include=TRUE}
+Idents(seuratM) <- seuratM$clusterName
+seuratCM <- subset(seuratM, idents = c("CM"))
+levels(seuratCM)
+table(seuratCM$orig.ident)
+table(seuratCM$clusterName)
+DimPlot(seuratCM, reduction = "umap", cols = colclusterName)
+remove(seuratM)
+```
+
+## rerun seurat
+```{r, eval=FALSE, include=TRUE}
+##recreate assay 
+seuratCM@assays$RNA@layers$data = NULL
+seuratCM@assays$RNA@layers$scale.data = NULL
+counts = GetAssayData(seuratCM, assay = "RNA", layer = "counts")
+seuratCM[["RNA"]] = CreateAssayObject(counts = counts)
+
+##rerun seurat
+seuratCM <- NormalizeData (object = seuratCM)
+seuratCM <- FindVariableFeatures(object = seuratCM)
+seuratCM <- ScaleData(object = seuratCM, verbose = TRUE)
+seuratCM <- RunPCA(object=seuratCM, npcs = 30, verbose = FALSE)
+seuratCM <- RunTSNE(object=seuratCM, reduction="pca", dims = 1:20)
+seuratCM <- RunUMAP(object=seuratCM, reduction="pca", dims = 1:20)
+seuratCM <- FindNeighbors(object = seuratCM, reduction = "pca", dims= 1:20)
+
+res <- c(0.25, 0.6, 0.8, 0.4, 0.1)
+for (i in 1:length(res)) {
+  seuratCM <- FindClusters(object = seuratCM, resolution = res[i], random.seed = 1234)
+}
+
+table(seuratCM$orig.ident)
+table(seuratCM$RNA_snn_res.0.25)
+table(seuratCM$RNA_snn_res.0.1)
+```
+
+```{r, eval=FALSE, include=TRUE}
+### save seurat object
+saveRDS(seuratCM, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_CM.rds")
+```
+
+## load CM
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_CM.rds"
+seuratCM <- readRDS(fileNam)
+table(seuratCM$dataset)
+table(seuratCM$RNA_snn_res.0.25)
+table(seuratCM$orig.ident)
+```
+
+## umaps
+```{r umaps}
+colCM <- c("#003c30", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429")
+names(colCM) <- unique(seuratCM$RNA_snn_res.0.25)
+
+Idents(seuratCM) <- seuratCM$RNA_snn_res.0.25
+DimPlot(seuratCM, reduction = "umap", pt.size = 0.5, label = TRUE, cols = colCM)
+
+Idents(seuratCM) <- seuratCM$RNA_snn_res.0.1
+DimPlot(seuratCM, reduction = "umap", pt.size = 0.5, label = TRUE, cols = colCM)
+
+Idents(seuratCM) <- seuratCM$diseaseCond
+DimPlot(seuratCM, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond)
+DimPlot(seuratCM, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond) + theme(legend.position = "null")
+```
+
+## calculate cluster marker genes
+```{r cluster marker genes, include=TRUE, eval=FALSE}
+##cluster marker
+Idents(seuratCM) <- seuratCM$RNA_snn_res.0.25
+markerGenes <- FindAllMarkers(seuratCM, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+
+#save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesCMRNA_snn_res.0.25",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+```
+
+## BMP features 
+```{r features}
+genes <- data.frame(gene=rownames(seuratCM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratCM, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE) +
+    theme(legend.position="right")
+  plot(p)
+})
+```
