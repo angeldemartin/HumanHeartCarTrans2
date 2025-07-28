@@ -1,0 +1,148 @@
+---
+title: "FbhighresGSEA"
+author: "A.DeMartin"
+date: "2025-07-25"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+```{r}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","#bac1d1")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell","Mph3")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## load file AllFb
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds"
+seuratAllFb <- readRDS(fileNam)
+
+colAllFb <- c("#D53E4F","#f4a582","#ff7b7b","#8e0b00","#FEE08B","#42090D","#FF7B00","#FFF4DF")
+names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5")
+```
+
+## umaps
+```{r umaps AllFb}
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label = TRUE)
+```
+
+```{r GSEA Fb3, fig.height=12, fig.width=12}
+## load marker genes
+markerGenes <- read.delim("/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesAllFb_clusterNameAllFb", header = TRUE, sep = "\t")
+
+## adjust table
+markerG <- dplyr::filter(markerGenes, cluster == "Fb3")
+markerG <- markerG %>%
+  mutate(Gene=gsub("^.*\\.", "", gene))  %>%
+  mutate(EnsID=gsub("\\..*","", gene))
+
+## GSEA 
+ego <- enrichGO(gene = unique(markerG$gene),
+                          OrgDb = org.Hs.eg.db,
+                          keyType = 'ENSEMBL',
+                          ont = "BP",
+                          pAdjustMethod = "BH",
+                          pvalueCutoff = 0.05,
+                          qvalueCutoff = 0.05)
+ego <- setReadable(ego, OrgDb = org.Hs.eg.db)
+dotplot(ego, showCategory=30)
+```
+
+### convert to sce 
+```{r}
+##convert seurat object to sce object
+##exteract logcounts
+logcounts <- GetAssayData(seuratAllFb, assay = "RNA", slot = "data")
+counts <- GetAssayData(seuratAllFb, assay = "RNA", slot = "counts")
+##extract reduced dims from integrated assay
+pca <- Embeddings(seuratAllFb, reduction = "pca")
+umap <- Embeddings(seuratAllFb, reduction = "umap")
+##create sce object
+sce <- SingleCellExperiment(assays =list (
+  counts = counts,
+  logcounts = logcounts
+),
+colData = seuratAllFb@meta.data,
+rowData = data.frame(gene_id = rownames(logcounts)),
+reducedDims = SimpleList(
+  PCA = pca,
+  UMAP = umap
+))
+
+genes <- data.frame(geneID=rownames(sce)) %>% mutate(gene=gsub(".*\\.", "", geneID))
+pal = colorRampPalette(c("#053061", "#2166ac", "#f7f7f7", "#f4a582", "#b2183c", "#85122d"))
+```
+
+## project signatures
+### regulation of type I interferon production
+```{r regulation of type I interferon production}
+ego1 <- dplyr::filter(ego@result, ego@result$Description=="regulation of type I interferon production")
+g1 <- ego1$geneID
+Str <-(g1)
+StrSub <- strsplit(Str, "/")
+df <- as.data.frame(StrSub)
+colnames(df) <- c("gene")
+
+##make a count matrix of signature genes
+signGenes <- genes %>% dplyr::filter(gene %in% df$gene)
+
+sceSub <- sce[which(rownames(sce) %in% signGenes$geneID),]
+cntMat <- rowSums(t(as.matrix(
+    sceSub@assays@data$logcounts)))/nrow(signGenes)
+sceSub$sign <- cntMat
+sceSub$sign2 <- sceSub$sign
+sc <- scale_colour_gradientn(colours = pal(100), limits=c(0, 0.6))
+sceSub$sign2[which(sceSub$sign > 0.6)] <- 0.6
+sceSub$sign2[which(sceSub$sign < 0)] <- 0
+##check max and min values
+max(sceSub$sign)
+min(sceSub$sign)
+plotUMAP(sceSub, colour_by = "sign2") + sc +
+  theme(legend.position = "none", point_size = 1)
+plotUMAP(sceSub, colour_by = "sign2", point_size = 1) + sc
+```
+
+
+

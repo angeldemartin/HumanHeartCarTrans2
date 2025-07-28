@@ -1,0 +1,195 @@
+---
+title: "slingshotIntFb"
+author: "A.DeMartin"
+date: "2025-07-23"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+library(slingshot)
+library(RColorBrewer)
+```
+
+## load file IntFb
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds"
+seuratIntFb <- readRDS(fileNam)
+table(seuratIntFb$dataset)
+```
+
+```{r}
+colAllFb <- c("#D53E4F","#f4a582","#ff7b7b","#8e0b00","#FEE08B","#42090D","#FF7B00","#FFF4DF")
+names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5")
+
+colIntFb <- c("#D53E4F","#8e0b00","#42090D","#FFF4DF")
+names(colIntFb) <- c("Fb1/2","Fb3","Fb4", "Fb5")
+```
+
+### umap
+```{r umaps}
+Idents(seuratIntFb) <- seuratIntFb$clusterNameAllFb
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label = TRUE)
+
+Idents(seuratIntFb) <- seuratIntFb$clusterNameIntFb
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, cols = colIntFb, label = TRUE)
+```
+
+### convert to sce
+```{r}
+##convert seurat object to sce object
+sce <- as.SingleCellExperiment(seuratIntFb)
+```
+
+## slingshot 
+```{r}
+## set Fb4 as startpoint
+sce <- slingshot(sce, clusterLabels = 'clusterNameAllFb', reducedDim = 'UMAP',
+                 start.clus="Fb4",
+                 #dist.method="simple", 
+                 #extend = 'n', 
+                 #stretch=0
+                 )
+```
+
+```{r}
+clustDat <- data.frame(clustCol=colAllFb) %>% rownames_to_column(., "cluster")
+colDat <- data.frame(cluster=seuratIntFb$clusterNameAllFb)  %>% left_join(., clustDat, by="cluster") 
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, type = 'lineages', col = 'black')
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'YlGnBu'))(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce)), breaks=100)]
+
+plot(reducedDims(sce)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+### color lineages
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+plot(reducedDims(sce)$UMAP, col = "#bfbcbd", pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=4, col=colLin)
+```
+
+## slingshot-v2
+```{r}
+## set Fb4 as startpoint
+sce <- slingshot(sce, clusterLabels = 'clusterNameAllFb', reducedDim = 'UMAP',
+                 start.clus="Fb4",
+                 dist.method="simple", 
+                 extend = 'n', 
+                 stretch=0
+                 )
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, type = 'lineages', col = 'black')
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'YlGnBu'))(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce)), breaks=100)]
+
+plot(reducedDims(sce)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+## color lineages
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+plot(reducedDims(sce)$UMAP, col = "#bfbcbd", pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=4, col=colLin)
+```
+
+## slingshot-v3
+```{r}
+## set Fb4 as startpoint
+sce <- slingshot(sce, clusterLabels = 'clusterNameAllFb', reducedDim = 'UMAP',
+                 start.clus="Fb4",
+                 dist.method="slingshot", 
+                 extend = 'n', 
+                 stretch=0
+                 )
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, type = 'lineages', col = 'black')
+```
+
+```{r}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+## color lineages
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+plot(reducedDims(sce)$UMAP, col = "#bfbcbd", pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=4, col=colLin)
+```
+
+## session info
+```{r date and session info}
+date()
+sessionInfo()
+```

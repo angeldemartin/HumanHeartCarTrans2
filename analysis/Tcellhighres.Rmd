@@ -1,0 +1,293 @@
+---
+title: "Tcellhighres"
+author: "A.DeMartin"
+date: "2025-07-25"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+### load packages
+```{r load packages, warning=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+```
+
+### load object
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
+seuratM <- readRDS(fileNam)
+```
+
+```{r}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","#bac1d1")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell","Mph3")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+```{r}
+## check umap
+Idents(seuratM) <- seuratM$clusterName
+DimPlot(seuratM, reduction = "umap", cols = colclusterName, label= TRUE)
+```
+
+### subset Tcells
+```{r}
+## subset Tcell1
+seuratT <- subset(seuratM, idents = c("Tcell1")) ## exclude Tcell2 - int cells/doublets
+levels(seuratT)
+table(seuratT$orig.ident)
+table(seuratT$clusterName)
+DimPlot(seuratT, reduction = "umap", cols = colclusterName, label=TRUE)
+```
+
+### rerun seurat Tcells
+```{r, eval=FALSE, include=TRUE}
+## rerun seurat
+seuratT <- NormalizeData (object = seuratT)
+seuratT <- FindVariableFeatures(object = seuratT)
+seuratT <- ScaleData(object = seuratT, verbose = TRUE)
+seuratT <- RunPCA(object=seuratT, npcs = 30, verbose = FALSE)
+seuratT <- RunTSNE(object=seuratT, reduction="pca", dims = 1:20)
+seuratT <- RunUMAP(object=seuratT, reduction="pca", dims = 1:20)
+seuratT <- FindNeighbors(object = seuratT, reduction = "pca", dims= 1:20)
+
+res <- c(0.25, 0.6, 0.8, 0.4, 0.1)
+for (i in 1:length(res)) {
+  seuratT <- FindClusters(object = seuratT, resolution = res[i], random.seed = 1234)
+}
+
+table(seuratT$orig.ident)
+table(seuratT$RNA_snn_res.0.25)
+```
+
+## load file T cells
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_Tcells.rds"
+seuratT <- readRDS(fileNam)
+```
+
+```{r, eval=FALSE, include=TRUE}
+### save seurat object
+saveRDS(seuratT, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_Tcells.rds")
+```
+
+```{r set color vector AllFb}
+colT <- c("#FEE08B","#42090D","#FF7B00","#B09C85")
+names(colT) <- unique(seuratT$RNA_snn_res.0.1)
+
+colT2 <- c("#FEE08B","#42090D","#FF7B00","#B09C85","#202547","#B45B5C","#725663FF","#232429","#bac1d1")
+names(colT2) <- unique(seuratT$RNA_snn_res.0.25)
+```
+
+## umaps
+```{r umaps Tcells}
+Idents(seuratT) <- seuratT$RNA_snn_res.0.25
+DimPlot(seuratT, reduction = "umap", pt.size = 0.5, label = TRUE, cols = colT2)
+
+Idents(seuratT) <- seuratT$RNA_snn_res.0.1
+DimPlot(seuratT, reduction = "umap", pt.size = 0.5, label = TRUE, cols=colT)
+
+Idents(seuratT) <- seuratT$diseaseCond
+DimPlot(seuratT, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond)
+```
+
+### calculate cluster marker genes Tcells
+```{r, include=TRUE, eval=FALSE}
+## cluster marker 0.1
+Idents(seuratT) <- seuratT$RNA_snn_res.0.1
+markerGenes <- FindAllMarkers(seuratT, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+## save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesTcell_RNA_snn_res.0.1",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+
+## cluster marker 0.25
+Idents(seuratT) <- seuratT$RNA_snn_res.0.25
+markerGenes <- FindAllMarkers(seuratT, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+## save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesTcell_RNA_snn_res.0.25",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+
+## diseaseCond DE genes
+Idents(seuratT) <- seuratT$diseaseCond
+markerGenes <- FindAllMarkers(seuratT, only.pos=T) %>% 
+  dplyr::filter(p_val_adj < 0.01)
+## save table
+write.table(markerGenes, 
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesTcell_diseaseCond",
+            sep="\t",
+            quote=F,
+            row.names=F,
+            col.names=T)
+```
+
+### features
+```{r features Tcells}
+genes <- data.frame(gene=rownames(seuratT)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("CD3E", "FOXP3", "CD4", "CD8A", "CD8B", "PDCD1", "CTLA4", "IL2RA", "IL7R", "GZMK", "GZMA", "TNF", "IFNG", "HLA-DRA", "CD69", "CD44", "CCR7", "SELL", "IL2", "KLRD1","KLRF1", "MKI67", "CAMK4", "TCF7", "GREM2")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratT, features = x, 
+                   reduction = "umap", pt.size = 0.1, 
+                   cols = c("lightgrey", "#BE3144")) +
+    theme(legend.position="right")
+  plot(p)
+})
+```
+
+## abundance plots
+### patient_diseaseCond
+```{r abundance patient_diseaseCond Tcells, fig.height=8, fig.width=10}
+order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant")
+files <- unique(seuratT$patient_diseaseCond)
+ordered_files <- c()
+for (key in order_keywords) {
+  ordered_files <- c(ordered_files, files[grepl(key, files)])
+}
+
+## patient_diseaseCond
+datList <- NULL
+for(con in unique(seuratT$patient_diseaseCond)){
+  seuratSub <- subset(seuratT, patient_diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$RNA_snn_res.0.1)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(patient_diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "patient_diseaseCond", y= "percent", fill = "Var1", 
+          palette = colT, 
+          legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)
+```
+
+### patient_diseaseCond-2
+```{r abundance patient_diseaseCond-2 Tcells, fig.height=8, fig.width=10}
+order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant")
+files <- unique(seuratT$patient_diseaseCond)
+ordered_files <- c()
+for (key in order_keywords) {
+  ordered_files <- c(ordered_files, files[grepl(key, files)])
+}
+
+## patient_diseaseCond
+datList <- NULL
+for(con in unique(seuratT$patient_diseaseCond)){
+  seuratSub <- subset(seuratT, patient_diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$RNA_snn_res.0.25)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(patient_diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "patient_diseaseCond", y= "percent", fill = "Var1", 
+          palette = colT2, 
+          legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)
+```
+
+### diseaseCond
+```{r abundance diseaseCond Tcells, fig.height=8, fig.width=10}
+orddiseaseCond <- c("healthy","visit1", "visit2" ,"visit3", "explant")
+
+###diseaseCond
+datList <- NULL
+for(con in unique(seuratT$diseaseCond)){
+  seuratSub <- subset(seuratT, diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$RNA_snn_res.0.1)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "diseaseCond", y= "percent", fill = "Var1", 
+          palette = colT, 
+          legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=orddiseaseCond)
+```
+### diseaseCond-2
+```{r abundance diseaseCond-2 Tcells, fig.height=8, fig.width=10}
+orddiseaseCond <- c("healthy","visit1", "visit2" ,"visit3", "explant")
+
+###diseaseCond
+datList <- NULL
+for(con in unique(seuratT$diseaseCond)){
+  seuratSub <- subset(seuratT, diseaseCond==con)
+  print(dim(seuratSub))
+  dat_con <- as.data.frame(table(seuratSub$RNA_snn_res.0.25)) %>%
+  mutate(percent=Freq/ncol(seuratSub)) %>% mutate(diseaseCond=con)
+  datList[[con]] <- dat_con
+}
+dat_all <- do.call("rbind", datList)
+
+## plot abundance
+ggbarplot(dat_all, x= "diseaseCond", y= "percent", fill = "Var1", 
+          palette = colT2, 
+          legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=orddiseaseCond)
+```
+
+## dotplot 
+```{r dotplot, fig.width=15, fig.height=8}
+genes <- data.frame(gene=rownames(seuratT)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("CD3E", "FOXP3", "CD4", "CD8A", "CD8B", "PDCD1", "CTLA4", "IL2RA", "IL7R", "GZMK", "GZMA", "TNF", "IFNG", "HLA-DRA", "CD69", "CD44", "CCR7", "SELL", "IL2", "KLRD1","KLRF1", "MKI67", "CAMK4", "TCF7", "GREM2")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratT, features = selGenes, group.by= "RNA_snn_res.0.25") + RotatedAxis() + scale_color_viridis(option="D") + coord_flip()
+```
+
+### session info
+```{r date and session info}
+date()
+sessionInfo()
+```

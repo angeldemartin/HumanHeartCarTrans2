@@ -24,6 +24,32 @@ Relative abundance
 Expression of BMP and HGF signaling genes
 [link](BMP_HGF.html)
 
-### Fb high resolution
+## Fb high resolution
+### Subset and characterize
 Fb
 [link](Fbhighres.html)
+
+### GSEA and infl signatures
+GSEA
+[link](FbhighresGSEA.html)
+
+### Trajectory analysis
+Trajectory
+[link](slingshotIntFb.html)
+
+### TradeSEQ
+TradeSEQ
+[link](tradeseqIntFb.html)
+
+### T cells high resolution
+Tcells
+[link](Tcellhighres.html)
+
+
+
+
+
+
+
+
+

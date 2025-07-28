@@ -382,7 +382,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-07-02
+<strong>Last updated:</strong> 2025-07-24
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -544,10 +544,18 @@ data/Human_heart_AllFb.rds
 </tr>
 <tr>
 <td style="text-align:left;">
-/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/analysis/markerGenesAllFbRNA_snn_res.0.25
+/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesAllFb_clusterNameAllFb
 </td>
 <td style="text-align:left;">
-analysis/markerGenesAllFbRNA_snn_res.0.25
+data/markerGenesAllFb_clusterNameAllFb
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds
+</td>
+<td style="text-align:left;">
+data/Human_heart_IntFb.rds
 </td>
 </tr>
 </tbody>
@@ -558,15 +566,15 @@ analysis/markerGenesAllFbRNA_snn_res.0.25
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0990ccad603b0fa97298fdb647c8ea2a4ce31aa7targetblank0990ccaa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2treea9a9162055dbf59e8833298a961a773e821f2ffftargetblanka9a9162a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0990ccad603b0fa97298fdb647c8ea2a4ce31aa7" target="_blank">0990cca</a>
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/a9a9162055dbf59e8833298a961a773e821f2fff" target="_blank">a9a9162</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2tree0990ccad603b0fa97298fdb647c8ea2a4ce31aa7targetblank0990ccaa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomangeldemartinHumanHeartCarTrans2treea9a9162055dbf59e8833298a961a773e821f2ffftargetblanka9a9162a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -576,7 +584,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/0990ccad603b0fa97298fdb647c8ea2a4ce31aa7" target="_blank">0990cca</a>.
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/tree/a9a9162055dbf59e8833298a961a773e821f2fff" target="_blank">a9a9162</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -594,14 +602,20 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
     Ignored:    analysis/.Rhistory
     Ignored:    data/seurat files/
 
 Untracked files:
-    Untracked:  analysis/CMhighres.Rmd
+    Untracked:  analysis/slingshotAllFb.Rmd
+    Untracked:  analysis/slingshotIntFb.Rmd
 
 Unstaged changes:
+    Modified:   analysis/BMP_HGF.Rmd
     Modified:   analysis/Fbhighres.Rmd
+    Modified:   analysis/Merge-QC-UMAPS.Rmd
+    Deleted:    analysis/markerGenesRNAAllFb_snn_res.0.25
+    Deleted:    analysis/markerGenesRNA_snn_res.0.4
 
 </code></pre>
 <p>
@@ -651,6 +665,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/a9a9162055dbf59e8833298a961a773e821f2fff/analysis/Fbhighres.Rmd" target="_blank">a9a9162</a>
+</td>
+<td>
+angeldemartin
+</td>
+<td>
+2025-07-02
+</td>
+<td>
+july02
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/angeldemartin/HumanHeartCarTrans2/a9a9162055dbf59e8833298a961a773e821f2fff/docs/Fbhighres.html" target="_blank">a9a9162</a>
+</td>
+<td>
+angeldemartin
+</td>
+<td>
+2025-07-02
+</td>
+<td>
+july02
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/analysis/Fbhighres.Rmd" target="_blank">f1b5059</a>
 </td>
 <td>
@@ -692,34 +740,41 @@ may22
 </div>
 <div id="load-object" class="section level2">
 <h2>load object</h2>
+<pre class="r"><code>fileNam &lt;- &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds&quot;
+seuratM &lt;- readRDS(fileNam)</code></pre>
 </div>
 <div id="set-color-vectors" class="section level2">
 <h2>set color vectors</h2>
-<pre class="r"><code>colclusterName &lt;- c(&quot;#67001f&quot;, &quot;#f4a582&quot;,&quot;#D53E4F&quot;, &quot;#FEE08B&quot;,&quot;#8c510a&quot;,&quot;#003c30&quot;,&quot;#01665e&quot;,&quot;#66C2A5&quot;, &quot;#3288BD&quot;,&quot;#BEAED4&quot;, &quot;#c7eae5&quot;, &quot;#B09C85&quot;, &quot;#4e5a4c&quot;,&quot;#393A3F&quot;,&quot;#355C7D&quot;,&quot;#202547&quot;,&quot;#B45B5C&quot;,&quot;#725663FF&quot;,&quot;#232429&quot;)
-names(colclusterName) &lt;- c(&quot;CM&quot;,&quot;Fb1&quot;,&quot;Fb2&quot;,&quot;Fb3&quot;,&quot;PerivFb1&quot;,&quot;PerivFb2&quot;,&quot;VSMC&quot;,&quot;BEC1&quot;,&quot;BEC2&quot;,&quot;BEC3&quot;,&quot;LEC&quot;,&quot;NC&quot;,&quot;Baror&quot;,&quot;Adipoc&quot;,&quot;Mph1&quot;,&quot;Mph2&quot;,&quot;Tcell1&quot;,&quot;Tcell2&quot;,&quot;Mastcell&quot;)
+<pre class="r"><code>colclusterName &lt;- c(&quot;#67001f&quot;, &quot;#f4a582&quot;,&quot;#D53E4F&quot;, &quot;#FEE08B&quot;,&quot;#8c510a&quot;,&quot;#003c30&quot;,&quot;#01665e&quot;,&quot;#66C2A5&quot;, &quot;#3288BD&quot;,&quot;#BEAED4&quot;, &quot;#c7eae5&quot;, &quot;#B09C85&quot;, &quot;#4e5a4c&quot;,&quot;#393A3F&quot;,&quot;#355C7D&quot;,&quot;#202547&quot;,&quot;#B45B5C&quot;,&quot;#725663FF&quot;,&quot;#232429&quot;,&quot;#bac1d1&quot;)
+names(colclusterName) &lt;- c(&quot;CM&quot;,&quot;Fb1&quot;,&quot;Fb2&quot;,&quot;Fb3&quot;,&quot;PerivFb1&quot;,&quot;PerivFb2&quot;,&quot;VSMC&quot;,&quot;BEC1&quot;,&quot;BEC2&quot;,&quot;BEC3&quot;,&quot;LEC&quot;,&quot;NC&quot;,&quot;Baror&quot;,&quot;Adipoc&quot;,&quot;Mph1&quot;,&quot;Mph2&quot;,&quot;Tcell1&quot;,&quot;Tcell2&quot;,&quot;Mastcell&quot;,&quot;Mph3&quot;)
 
 coldiseaseCond &lt;- c(&quot;#dfc27d&quot;,&quot;#BE3144&quot;,&quot;#202547&quot;,&quot;#355C7D&quot;,&quot;#779d8d&quot;)
 names(coldiseaseCond) &lt;- c(&quot;healthy&quot;, &quot;explant&quot;, &quot;visit1&quot;, &quot;visit2&quot;, &quot;visit3&quot;)</code></pre>
+<pre class="r"><code>## check umap
+Idents(seuratM) &lt;- seuratM$clusterName
+DimPlot(seuratM, reduction = &quot;umap&quot;, cols = colclusterName, label= TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="subset-fb-perivfb-vsmc" class="section level2">
-<h2>subset Fb, PerivFb, VSMC</h2>
-<pre class="r"><code>Idents(seuratM) &lt;- seuratM$clusterName
-seuratAllFb &lt;- subset(seuratM, idents = c(&quot;Fb1&quot;, &quot;Fb2&quot;, &quot;Fb3&quot;, &quot;PerivFb1&quot;, &quot;PerivFb2&quot;, &quot;VSMC&quot;))
-levels(seuratAllFb)
-table(seuratAllFb$orig.ident)
-table(seuratAllFb$clusterName)
-DimPlot(seuratAllFb, reduction = &quot;umap&quot;, cols = colclusterName)
-remove(seuratM)</code></pre>
+<div id="subset-fb-perivfb-vsmc-allfb" class="section level2">
+<h2>subset Fb, PerivFb, VSMC (AllFb)</h2>
+<pre class="r"><code>## subset Fb, PerivFb and VSMC
+seuratAllFb &lt;- subset(seuratM, idents = c(&quot;Fb1&quot;, &quot;Fb2&quot;, &quot;PerivFb1&quot;, &quot;VSMC&quot;)) ## exclude Fb3 and PerivFb2 - int cells/doublets
+levels(seuratAllFb)</code></pre>
+<pre><code>[1] &quot;Fb1&quot;      &quot;Fb2&quot;      &quot;PerivFb1&quot; &quot;VSMC&quot;    </code></pre>
+<pre class="r"><code>table(seuratAllFb$orig.ident)</code></pre>
+<pre><code>
+      
+83263 </code></pre>
+<pre class="r"><code>table(seuratAllFb$clusterName)</code></pre>
+<pre><code>
+     Fb1      Fb2 PerivFb1     VSMC 
+   34945    20185    24499     3634 </code></pre>
+<pre class="r"><code>DimPlot(seuratAllFb, reduction = &quot;umap&quot;, cols = colclusterName, label=TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="rerun-seurat" class="section level2">
-<h2>rerun seurat</h2>
-<pre class="r"><code>##recreate assay 
-seuratAllFb@assays$RNA@layers$data = NULL
-seuratAllFb@assays$RNA@layers$scale.data = NULL
-counts = GetAssayData(seuratAllFb, assay = &quot;RNA&quot;, layer = &quot;counts&quot;)
-seuratAllFb[[&quot;RNA&quot;]] = CreateAssayObject(counts = counts)
-
-##rerun seurat
+<div id="rerun-seurat-allfb" class="section level2">
+<h2>rerun seurat AllFb</h2>
+<pre class="r"><code>## rerun seurat
 seuratAllFb &lt;- NormalizeData (object = seuratAllFb)
 seuratAllFb &lt;- FindVariableFeatures(object = seuratAllFb)
 seuratAllFb &lt;- ScaleData(object = seuratAllFb, verbose = TRUE)
@@ -869,260 +924,35 @@ names(colAllFb) &lt;- c(&quot;Fb1&quot;,&quot;PerivFb1&quot;,&quot;Fb2&quot;,&qu
 <h2>umaps</h2>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$RNA_snn_res.0.25
 DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, label = TRUE)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-1">
-Past versions of umaps-1.png
-</button>
-</p>
-<div id="fig-umaps-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-1.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$clusterName
 DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = colclusterName, label = TRUE)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-2">
-Past versions of umaps-2.png
-</button>
-</p>
-<div id="fig-umaps-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-2.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$clusterNameAllFb
 DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = colAllFb, label = TRUE)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-3.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-3">
-Past versions of umaps-3.png
-</button>
-</p>
-<div id="fig-umaps-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-3.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = colAllFb)  + theme(legend.position = &quot;null&quot;)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-4">
-Past versions of umaps-4.png
-</button>
-</p>
-<div id="fig-umaps-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-4.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$diseaseCond
-DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = coldiseaseCond)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-5.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-5">
-Past versions of umaps-5.png
-</button>
-</p>
-<div id="fig-umaps-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-5.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = coldiseaseCond) + theme(legend.position = &quot;null&quot;)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/umaps-6.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-umaps-6">
-Past versions of umaps-6.png
-</button>
-</p>
-<div id="fig-umaps-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/angeldemartin/HumanHeartCarTrans2/blob/f1b5059e279271f77adc69bc875de045967907a0/docs/figure/Fbhighres.Rmd/umaps-6.png" target="_blank">f1b5059</a>
-</td>
-<td>
-angeldemartin
-</td>
-<td>
-2025-05-22
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="calculate-cluster-marker-genes" class="section level2">
-<h2>calculate cluster marker genes</h2>
-<pre class="r"><code>##cluster marker
-Idents(seuratAllFb) &lt;- seuratAllFb$RNA_snn_res.0.25
+DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = coldiseaseCond, shuffle= TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DimPlot(seuratAllFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = coldiseaseCond, shuffle = TRUE) + theme(legend.position = &quot;null&quot;)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20AllFb-6.png" width="672" style="display: block; margin: auto;" />
+## calculate cluster marker genes AllFb</p>
+<pre class="r"><code>## cluster marker
+Idents(seuratAllFb) &lt;- seuratAllFb$clusterNameAllFb
 markerGenes &lt;- FindAllMarkers(seuratAllFb, only.pos=T) %&gt;% 
   dplyr::filter(p_val_adj &lt; 0.01)
 
-#save table
+## save table
 write.table(markerGenes, 
-            file= &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/analysis/markerGenesAllFbRNA_snn_res.0.25&quot;,
+            file= &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesAllFb_clusterNameAllFb&quot;,
             sep=&quot;\t&quot;,
             quote=F,
             row.names=F,
             col.names=T)</code></pre>
-</div>
-<div id="bmp-features" class="section level2">
-<h2>BMP features</h2>
+<div id="bmp-features" class="section level3">
+<h3>BMP features</h3>
 <pre class="r"><code>genes &lt;- data.frame(gene=rownames(seuratAllFb)) %&gt;% 
   mutate(geneID=gsub(&quot;^.*\\.&quot;, &quot;&quot;, gene))
 
@@ -1130,14 +960,15 @@ selGenes &lt;- data.frame(geneID=c(&quot;HGF&quot;, &quot;MET&quot;, &quot;GREM1
   left_join(., genes, by=&quot;geneID&quot;)
 
 pList &lt;- sapply(selGenes$gene, function(x){
-  p &lt;- FeaturePlot(seuratAllFb, features = x, reduction = &quot;umap&quot;, pt.size = 0.1, cols = c(&quot;lightgrey&quot;, &quot;#BE3144&quot;), raster = FALSE) +
+  p &lt;- FeaturePlot(seuratAllFb, features = x, 
+                   reduction = &quot;umap&quot;, pt.size = 0.1, 
+                   cols = c(&quot;lightgrey&quot;, &quot;#BE3144&quot;), 
+                   raster = FALSE) +
     theme(legend.position=&quot;right&quot;)
   plot(p)
 })</code></pre>
-<p><img src="figure/Fbhighres.Rmd/features-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features-13.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="bmp-features-ordered" class="section level2">
-<h2>BMP features ordered</h2>
+<p><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20AllFb-13.png" width="672" style="display: block; margin: auto;" />
+### BMP featuresb ordered</p>
 <pre class="r"><code>genes &lt;- data.frame(gene=rownames(seuratAllFb)) %&gt;% 
   mutate(geneID=gsub(&quot;^.*\\.&quot;, &quot;&quot;, gene))
 
@@ -1145,25 +976,34 @@ selGenes &lt;- data.frame(geneID=c(&quot;HGF&quot;, &quot;MET&quot;, &quot;GREM1
   left_join(., genes, by=&quot;geneID&quot;)
 
 pList &lt;- sapply(selGenes$gene, function(x){
-  p &lt;- FeaturePlot(seuratAllFb, features = x, reduction = &quot;umap&quot;, pt.size = 0.1, cols = c(&quot;lightgrey&quot;, &quot;#BE3144&quot;), raster = FALSE, order=TRUE) +
+  p &lt;- FeaturePlot(seuratAllFb, features = x, 
+                   reduction = &quot;umap&quot;, pt.size = 0.1, 
+                   cols = c(&quot;lightgrey&quot;, &quot;#BE3144&quot;), 
+                   raster = FALSE, 
+                   order=TRUE) +
     theme(legend.position=&quot;right&quot;)
   plot(p)
 })</code></pre>
-<p><img src="figure/Fbhighres.Rmd/features%20ordered-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20ordered-13.png" width="672" style="display: block; margin: auto;" /></p>
-<p>##violin plots</p>
+<p><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/features%20BMP%20ordered%20AllFb-13.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="bmp-violin-plots" class="section level3">
+<h3>BMP violin plots</h3>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$diseaseCond
 pList &lt;- sapply(selGenes$gene, function(x){
   p &lt;- VlnPlot( object = seuratAllFb, features = x, pt.size = 1, cols=coldiseaseCond)
   plot(p)
 })</code></pre>
-<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-1-13.png" width="672" style="display: block; margin: auto;" /></p>
-<p>##violin plots</p>
+<p><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20BMP%20AllFb-13.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="violin-plots" class="section level3">
+<h3>violin plots</h3>
 <pre class="r"><code>Idents(seuratAllFb) &lt;- seuratAllFb$diseaseCond
 pList &lt;- sapply(selGenes$gene, function(x){
   p &lt;- VlnPlot( object = seuratAllFb, features = x, pt.size = 0, cols=coldiseaseCond)
   plot(p)
 })</code></pre>
-<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/unnamed-chunk-2-13.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-10.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-11.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-12.png" width="672" style="display: block; margin: auto;" /><img src="figure/Fbhighres.Rmd/violin%20plots%20AllFb-13.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
 </div>
 <div id="abundance-plots" class="section level2">
 <h2>abundance plots</h2>
@@ -1278,7 +1118,7 @@ for(con in unique(seuratAllFb$dataset)){
 
 ## plot abundance
 ggbarplot(dat_all, x= &quot;dataset&quot;, y= &quot;percent&quot;, fill = &quot;Var1&quot;, palette = colAllFb, legend = &quot;right&quot;, legend.titel = &quot;cluster&quot;, ylab = &quot;frequency&quot;)  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/abundance%20dataset-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Fbhighres.Rmd/abundance%20dataset%20AllFb-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="patient_diseasecond" class="section level3">
 <h3>patient_diseaseCond</h3>
@@ -1375,7 +1215,7 @@ for(con in unique(seuratAllFb$patient_diseaseCond)){
 
 ## plot abundance
 ggbarplot(dat_all, x= &quot;patient_diseaseCond&quot;, y= &quot;percent&quot;, fill = &quot;Var1&quot;, palette = colAllFb, legend = &quot;right&quot;, legend.titel = &quot;cluster&quot;, ylab = &quot;frequency&quot;)  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=ordered_files)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/abundance%20patient_diseaseCond-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Fbhighres.Rmd/abundance%20patient_diseaseCond%20AllFb-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="diseasecond" class="section level3">
 <h3>diseaseCond</h3>
@@ -1399,13 +1239,112 @@ for(con in unique(seuratAllFb$diseaseCond)){
 
 ## plot abundance
 ggbarplot(dat_all, x= &quot;diseaseCond&quot;, y= &quot;percent&quot;, fill = &quot;Var1&quot;, palette = colAllFb, legend = &quot;right&quot;, legend.titel = &quot;cluster&quot;, ylab = &quot;frequency&quot;)  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=orddiseaseCond)</code></pre>
-<p><img src="figure/Fbhighres.Rmd/abundance%20diseaseCond-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Fbhighres.Rmd/abundance%20diseaseCoond%20AllFb-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="subset-intfb" class="section level2">
+<h2>subset IntFb</h2>
+<pre class="r"><code>## subset IntFb
+Idents(seuratAllFb) &lt;- seuratAllFb$clusterNameAllFb
+seuratIntFb &lt;- subset(seuratAllFb, idents = c(&quot;Fb1&quot;, &quot;Fb2&quot;, &quot;Fb3&quot;, &quot;Fb4&quot;, &quot;Fb5&quot;))
+table(seuratIntFb$clusterNameAllFb)</code></pre>
+<pre><code>
+  Fb1   Fb2   Fb3   Fb4   Fb5 
+17372 16705 13608  6368  1106 </code></pre>
+<pre class="r"><code>DimPlot(seuratIntFb, reduction = &quot;umap&quot;, cols = colAllFb, label=TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="rerun-seurat-intfb" class="section level2">
+<h2>rerun seurat IntFb</h2>
+<pre class="r"><code>## rerun seurat
+seuratIntFb &lt;- NormalizeData (object = seuratIntFb)
+seuratIntFb &lt;- FindVariableFeatures(object = seuratIntFb)
+seuratIntFb &lt;- ScaleData(object = seuratIntFb, verbose = TRUE)
+seuratIntFb &lt;- RunPCA(object=seuratIntFb, npcs = 30, verbose = FALSE)
+seuratIntFb &lt;- RunTSNE(object=seuratIntFb, reduction=&quot;pca&quot;, dims = 1:20)
+seuratIntFb &lt;- RunUMAP(object=seuratIntFb, reduction=&quot;pca&quot;, dims = 1:20)
+seuratIntFb &lt;- FindNeighbors(object = seuratIntFb, reduction = &quot;pca&quot;, dims= 1:20)
+
+res &lt;- c(0.25, 0.6, 0.8, 0.4, 0.1)
+for (i in 1:length(res)) {
+  seuratIntFb &lt;- FindClusters(object = seuratIntFb, resolution = res[i], random.seed = 1234)
+}
+
+table(seuratIntFb$orig.ident)
+table(seuratIntFb$RNA_snn_res.0.25)</code></pre>
+<pre class="r"><code>## clustername IntFb
+seuratIntFb$clusterNameIntFb &lt;- &quot;clusterNameIntFb&quot;
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% &quot;0&quot; )] &lt;- &quot;Fb1/2&quot;
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% &quot;1&quot; )] &lt;- &quot;Fb3&quot;
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% &quot;2&quot; )] &lt;- &quot;Fb4&quot;
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% &quot;3&quot; )] &lt;- &quot;Fb5&quot;
+
+table(seuratIntFb$clusterNameIntFb)
+table(seuratIntFb$RNA_snn_res.0.1)
+
+## order
+Idents(seuratIntFb) &lt;- seuratIntFb$clusterNameIntFb
+seuratIntFb$clusterNameIntFb &lt;- factor(seuratIntFb$clusterNameIntFb, levels=c(&quot;Fb1/2&quot;, &quot;Fb3&quot;, &quot;Fb4&quot;, &quot;Fb5&quot;))
+Idents(seuratIntFb) &lt;- seuratIntFb$clusterNameIntFb
+table(seuratIntFb$clusterNameIntFb)</code></pre>
+<pre class="r"><code>### save seurat object
+saveRDS(seuratIntFb, file=&quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds&quot;)</code></pre>
+</div>
+<div id="load-file-intfb" class="section level2">
+<h2>load file IntFb</h2>
+<pre class="r"><code>fileNam &lt;- &quot;/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds&quot;
+seuratIntFb &lt;- readRDS(fileNam)
+table(seuratIntFb$clusterNameIntFb, seuratIntFb$diseaseCond)</code></pre>
+<pre><code>       
+        healthy visit1 visit2 visit3 explant
+  Fb1/2     643    405    548    274   32433
+  Fb3       749   3744   3546   2398    2332
+  Fb4      6935     16     54     27     117
+  Fb5       924      7      2      5       0</code></pre>
+<pre class="r"><code>colIntFb &lt;- c(&quot;#D53E4F&quot;,&quot;#8e0b00&quot;,&quot;#42090D&quot;,&quot;#FFF4DF&quot;)
+names(colIntFb) &lt;- c(&quot;Fb1/2&quot;,&quot;Fb3&quot;,&quot;Fb4&quot;, &quot;Fb5&quot;)</code></pre>
+</div>
+<div id="umaps-1" class="section level2">
+<h2>umaps</h2>
+<pre class="r"><code>Idents(seuratIntFb) &lt;- seuratIntFb$RNA_snn_res.0.1
+DimPlot(seuratIntFb, reduction = &quot;umap&quot;, pt.size = 0.5, label = TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20IntFb-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratIntFb) &lt;- seuratIntFb$clusterNameAllFb
+DimPlot(seuratIntFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = colAllFb, label = TRUE, shuffle = TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20IntFb-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratIntFb) &lt;- seuratIntFb$clusterNameIntFb
+DimPlot(seuratIntFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = colIntFb, label = TRUE, shuffle = TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20IntFb-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Idents(seuratIntFb) &lt;- seuratIntFb$diseaseCond
+DimPlot(seuratIntFb, reduction = &quot;umap&quot;, pt.size = 0.5, cols = coldiseaseCond, shuffle = TRUE)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/umaps%20IntFb-4.png" width="672" style="display: block; margin: auto;" /></p>
+<div id="diffusion-map" class="section level3">
+<h3>diffusion map</h3>
+<pre class="r"><code>pca_embeddings &lt;- Embeddings(seuratIntFb, reduction = &quot;pca&quot;)
+dm &lt;- DiffusionMap(pca_embeddings)
+
+df &lt;- data.frame(DC1 = eigenvectors(dm)[,1], DC2 = eigenvectors(dm)[,2])
+
+## color according to clusterAllFb
+df$cluster &lt;- seuratIntFb$clusterNameAllFb
+
+ggplot(df, aes(x = DC1, y = DC2, color = cluster)) +
+  geom_point(size = 0.5) +
+  scale_color_manual(values = colAllFb)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>## color according to diseaseCond
+df$cluster &lt;- seuratIntFb$diseaseCond
+
+ggplot(df, aes(x = DC1, y = DC2, color = cluster)) +
+  geom_point(size = 0.5) +
+  scale_color_manual(values = coldiseaseCond)</code></pre>
+<p><img src="figure/Fbhighres.Rmd/unnamed-chunk-15-2.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="session-info" class="section level2">
 <h2>session info</h2>
 <pre class="r"><code>date()</code></pre>
-<pre><code>[1] &quot;Wed Jul  2 11:04:55 2025&quot;</code></pre>
+<pre><code>[1] &quot;Thu Jul 24 16:06:40 2025&quot;</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.4.0 (2024-04-24)
 Platform: x86_64-apple-darwin20
@@ -1468,66 +1407,66 @@ loaded via a namespace (and not attached):
  [67] XVector_0.44.0            knitr_1.50                ggplot.multistats_1.0.1  
  [70] UCSC.utils_1.0.0          RhpcBLASctl_0.23-42       timechange_0.3.0         
  [73] foreach_1.5.2             patchwork_1.3.0           caTools_1.18.3           
- [76] ggtree_3.12.0             data.table_1.17.4         R.oo_1.27.1              
- [79] RSpectra_0.16-2           irlba_2.3.5.1             ggrastr_1.0.2            
- [82] gridGraphics_0.5-1        fastDummies_1.7.5         lazyeval_0.2.2           
- [85] yaml_2.3.10               survival_3.8-3            scattermore_1.2          
- [88] crayon_1.5.3              RcppAnnoy_0.0.22          RColorBrewer_1.1-3       
- [91] progressr_0.15.1          tweenr_2.0.3              later_1.4.2              
- [94] ggridges_0.5.6            codetools_0.2-20          GlobalOptions_0.1.2      
- [97] aod_1.3.3                 KEGGREST_1.44.1           Rtsne_0.17               
-[100] shape_1.4.6.1             limma_3.60.6              pkgconfig_2.0.3          
-[103] TMB_1.9.17                spatstat.univar_3.1-3     mathjaxr_1.8-0           
-[106] EnvStats_3.1.0            aplot_0.2.5               scatterplot3d_0.3-44     
-[109] ape_5.8-1                 spatstat.sparse_3.1-0     xtable_1.8-4             
-[112] car_3.1-3                 plyr_1.8.9                httr_1.4.7               
-[115] rbibutils_2.3             tools_4.4.0               globals_0.18.0           
-[118] beeswarm_0.4.0            broom_1.0.8               nlme_3.1-168             
-[121] lambda.r_1.2.4            assertthat_0.2.1          lme4_1.1-37              
-[124] digest_0.6.37             numDeriv_2016.8-1.1       Matrix_1.7-3             
-[127] farver_2.1.2              tzdb_0.5.0                remaCor_0.0.18           
-[130] reshape2_1.4.4            yulab.utils_0.2.0         glue_1.8.0               
-[133] cachem_1.1.0              polyclip_1.10-7           generics_0.1.4           
-[136] Biostrings_2.72.1         mvtnorm_1.3-3             parallelly_1.45.0        
-[139] mnormt_2.1.1              statmod_1.5.0             RcppHNSW_0.6.0           
-[142] ScaledMatrix_1.12.0       carData_3.0-5             minqa_1.2.8              
-[145] pbapply_1.7-2             httr2_1.1.2               spam_2.11-1              
-[148] gson_0.1.0                graphlayouts_1.2.2        gtools_3.9.5             
-[151] ggsignif_0.6.4            RcppEigen_0.3.4.0.2       shiny_1.10.0             
-[154] GenomeInfoDbData_1.2.12   glmmTMB_1.1.11            R.utils_2.13.0           
-[157] memoise_2.0.1             rmarkdown_2.29            scales_1.4.0             
-[160] R.methodsS3_1.8.2         future_1.58.0             RANN_2.6.2               
-[163] Cairo_1.6-2               spatstat.data_3.1-6       rstudioapi_0.17.1        
-[166] cluster_2.1.8.1           whisker_0.4.1             mutoss_0.1-13            
-[169] spatstat.utils_3.1-4      hms_1.1.3                 fitdistrplus_1.2-2       
-[172] cowplot_1.1.3             colorspace_2.1-1          rlang_1.1.6              
-[175] DelayedMatrixStats_1.26.0 sparseMatrixStats_1.16.0  xts_0.14.1               
-[178] dotCall64_1.2             shinydashboard_0.7.3      ggforce_0.4.2            
-[181] laeken_0.5.3              mgcv_1.9-3                xfun_0.52                
-[184] e1071_1.7-16              TH.data_1.1-3             iterators_1.0.14         
-[187] abind_1.4-8               GOSemSim_2.30.2           treeio_1.28.0            
-[190] futile.options_1.0.1      bitops_1.0-9              Rdpack_2.6.4             
-[193] promises_1.3.3            scatterpie_0.2.4          RSQLite_2.4.0            
-[196] qvalue_2.36.0             sandwich_3.1-1            fgsea_1.30.0             
-[199] DelayedArray_0.30.1       proxy_0.4-27              GO.db_3.19.1             
-[202] compiler_4.4.0            prettyunits_1.2.0         boot_1.3-31              
-[205] beachmat_2.20.0           listenv_0.9.1             Rcpp_1.0.14              
-[208] edgeR_4.2.2               workflowr_1.7.1           BiocSingular_1.20.0      
-[211] tensor_1.5                MASS_7.3-65               progress_1.2.3           
-[214] BiocParallel_1.38.0       babelgene_22.9            spatstat.random_3.4-1    
-[217] R6_2.6.1                  fastmap_1.2.0             multcomp_1.4-28          
-[220] fastmatch_1.1-6           rstatix_0.7.2             vipor_0.4.7              
-[223] TTR_0.24.4                ROCR_1.0-11               TFisher_0.2.0            
-[226] rsvd_1.0.5                vcd_1.4-13                nnet_7.3-20              
-[229] gtable_0.3.6              KernSmooth_2.23-26        miniUI_0.1.2             
-[232] deldir_2.0-4              htmltools_0.5.8.1         ggthemes_5.1.0           
-[235] bit64_4.6.0-1             spatstat.explore_3.4-3    lifecycle_1.0.4          
-[238] blme_1.0-6                nloptr_2.2.1              sass_0.4.10              
-[241] vctrs_0.6.5               robustbase_0.99-4-1       spatstat.geom_3.4-1      
-[244] sn_2.1.1                  ggfun_0.1.8               future.apply_1.11.3      
-[247] bslib_0.9.0               pillar_1.10.2             gplots_3.2.0             
-[250] pcaMethods_1.96.0         locfit_1.5-9.12           jsonlite_2.0.0           
-[253] GetoptLong_1.0.5         </code></pre>
+ [76] knn.covertree_1.0         ggtree_3.12.0             data.table_1.17.4        
+ [79] R.oo_1.27.1               RSpectra_0.16-2           irlba_2.3.5.1            
+ [82] ggrastr_1.0.2             gridGraphics_0.5-1        fastDummies_1.7.5        
+ [85] lazyeval_0.2.2            yaml_2.3.10               survival_3.8-3           
+ [88] scattermore_1.2           crayon_1.5.3              RcppAnnoy_0.0.22         
+ [91] RColorBrewer_1.1-3        progressr_0.15.1          tweenr_2.0.3             
+ [94] later_1.4.2               ggridges_0.5.6            codetools_0.2-20         
+ [97] GlobalOptions_0.1.2       aod_1.3.3                 KEGGREST_1.44.1          
+[100] Rtsne_0.17                shape_1.4.6.1             limma_3.60.6             
+[103] pkgconfig_2.0.3           TMB_1.9.17                spatstat.univar_3.1-3    
+[106] mathjaxr_1.8-0            EnvStats_3.1.0            aplot_0.2.5              
+[109] scatterplot3d_0.3-44      ape_5.8-1                 spatstat.sparse_3.1-0    
+[112] xtable_1.8-4              car_3.1-3                 plyr_1.8.9               
+[115] httr_1.4.7                rbibutils_2.3             tools_4.4.0              
+[118] globals_0.18.0            beeswarm_0.4.0            broom_1.0.8              
+[121] nlme_3.1-168              lambda.r_1.2.4            assertthat_0.2.1         
+[124] lme4_1.1-37               digest_0.6.37             numDeriv_2016.8-1.1      
+[127] Matrix_1.7-3              farver_2.1.2              tzdb_0.5.0               
+[130] remaCor_0.0.18            reshape2_1.4.4            yulab.utils_0.2.0        
+[133] glue_1.8.0                cachem_1.1.0              polyclip_1.10-7          
+[136] generics_0.1.4            Biostrings_2.72.1         mvtnorm_1.3-3            
+[139] parallelly_1.45.0         mnormt_2.1.1              statmod_1.5.0            
+[142] RcppHNSW_0.6.0            ScaledMatrix_1.12.0       carData_3.0-5            
+[145] minqa_1.2.8               pbapply_1.7-2             httr2_1.1.2              
+[148] spam_2.11-1               gson_0.1.0                graphlayouts_1.2.2       
+[151] gtools_3.9.5              ggsignif_0.6.4            RcppEigen_0.3.4.0.2      
+[154] shiny_1.10.0              GenomeInfoDbData_1.2.12   glmmTMB_1.1.11           
+[157] R.utils_2.13.0            memoise_2.0.1             rmarkdown_2.29           
+[160] scales_1.4.0              R.methodsS3_1.8.2         future_1.58.0            
+[163] RANN_2.6.2                Cairo_1.6-2               spatstat.data_3.1-6      
+[166] rstudioapi_0.17.1         cluster_2.1.8.1           whisker_0.4.1            
+[169] mutoss_0.1-13             spatstat.utils_3.1-4      hms_1.1.3                
+[172] fitdistrplus_1.2-2        cowplot_1.1.3             colorspace_2.1-1         
+[175] rlang_1.1.6               DelayedMatrixStats_1.26.0 sparseMatrixStats_1.16.0 
+[178] xts_0.14.1                dotCall64_1.2             shinydashboard_0.7.3     
+[181] ggforce_0.4.2             laeken_0.5.3              mgcv_1.9-3               
+[184] xfun_0.52                 e1071_1.7-16              TH.data_1.1-3            
+[187] iterators_1.0.14          abind_1.4-8               GOSemSim_2.30.2          
+[190] treeio_1.28.0             futile.options_1.0.1      bitops_1.0-9             
+[193] Rdpack_2.6.4              promises_1.3.3            scatterpie_0.2.4         
+[196] RSQLite_2.4.0             qvalue_2.36.0             sandwich_3.1-1           
+[199] fgsea_1.30.0              DelayedArray_0.30.1       proxy_0.4-27             
+[202] GO.db_3.19.1              compiler_4.4.0            prettyunits_1.2.0        
+[205] boot_1.3-31               beachmat_2.20.0           listenv_0.9.1            
+[208] Rcpp_1.0.14               edgeR_4.2.2               workflowr_1.7.1          
+[211] BiocSingular_1.20.0       tensor_1.5                MASS_7.3-65              
+[214] progress_1.2.3            BiocParallel_1.38.0       babelgene_22.9           
+[217] spatstat.random_3.4-1     R6_2.6.1                  fastmap_1.2.0            
+[220] multcomp_1.4-28           fastmatch_1.1-6           rstatix_0.7.2            
+[223] vipor_0.4.7               TTR_0.24.4                ROCR_1.0-11              
+[226] TFisher_0.2.0             rsvd_1.0.5                vcd_1.4-13               
+[229] nnet_7.3-20               gtable_0.3.6              KernSmooth_2.23-26       
+[232] miniUI_0.1.2              deldir_2.0-4              htmltools_0.5.8.1        
+[235] ggthemes_5.1.0            bit64_4.6.0-1             spatstat.explore_3.4-3   
+[238] lifecycle_1.0.4           blme_1.0-6                nloptr_2.2.1             
+[241] sass_0.4.10               vctrs_0.6.5               robustbase_0.99-4-1      
+[244] spatstat.geom_3.4-1       sn_2.1.1                  ggfun_0.1.8              
+[247] future.apply_1.11.3       bslib_0.9.0               pillar_1.10.2            
+[250] gplots_3.2.0              pcaMethods_1.96.0         locfit_1.5-9.12          
+[253] jsonlite_2.0.0            GetoptLong_1.0.5         </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1598,66 +1537,66 @@ loaded via a namespace (and not attached):
  [67] XVector_0.44.0            knitr_1.50                ggplot.multistats_1.0.1  
  [70] UCSC.utils_1.0.0          RhpcBLASctl_0.23-42       timechange_0.3.0         
  [73] foreach_1.5.2             patchwork_1.3.0           caTools_1.18.3           
- [76] ggtree_3.12.0             data.table_1.17.4         R.oo_1.27.1              
- [79] RSpectra_0.16-2           irlba_2.3.5.1             ggrastr_1.0.2            
- [82] gridGraphics_0.5-1        fastDummies_1.7.5         lazyeval_0.2.2           
- [85] yaml_2.3.10               survival_3.8-3            scattermore_1.2          
- [88] crayon_1.5.3              RcppAnnoy_0.0.22          RColorBrewer_1.1-3       
- [91] progressr_0.15.1          tweenr_2.0.3              later_1.4.2              
- [94] ggridges_0.5.6            codetools_0.2-20          GlobalOptions_0.1.2      
- [97] aod_1.3.3                 KEGGREST_1.44.1           Rtsne_0.17               
-[100] shape_1.4.6.1             limma_3.60.6              pkgconfig_2.0.3          
-[103] TMB_1.9.17                spatstat.univar_3.1-3     mathjaxr_1.8-0           
-[106] EnvStats_3.1.0            aplot_0.2.5               scatterplot3d_0.3-44     
-[109] ape_5.8-1                 spatstat.sparse_3.1-0     xtable_1.8-4             
-[112] car_3.1-3                 plyr_1.8.9                httr_1.4.7               
-[115] rbibutils_2.3             tools_4.4.0               globals_0.18.0           
-[118] beeswarm_0.4.0            broom_1.0.8               nlme_3.1-168             
-[121] lambda.r_1.2.4            assertthat_0.2.1          lme4_1.1-37              
-[124] digest_0.6.37             numDeriv_2016.8-1.1       Matrix_1.7-3             
-[127] farver_2.1.2              tzdb_0.5.0                remaCor_0.0.18           
-[130] reshape2_1.4.4            yulab.utils_0.2.0         glue_1.8.0               
-[133] cachem_1.1.0              polyclip_1.10-7           generics_0.1.4           
-[136] Biostrings_2.72.1         mvtnorm_1.3-3             parallelly_1.45.0        
-[139] mnormt_2.1.1              statmod_1.5.0             RcppHNSW_0.6.0           
-[142] ScaledMatrix_1.12.0       carData_3.0-5             minqa_1.2.8              
-[145] pbapply_1.7-2             httr2_1.1.2               spam_2.11-1              
-[148] gson_0.1.0                graphlayouts_1.2.2        gtools_3.9.5             
-[151] ggsignif_0.6.4            RcppEigen_0.3.4.0.2       shiny_1.10.0             
-[154] GenomeInfoDbData_1.2.12   glmmTMB_1.1.11            R.utils_2.13.0           
-[157] memoise_2.0.1             rmarkdown_2.29            scales_1.4.0             
-[160] R.methodsS3_1.8.2         future_1.58.0             RANN_2.6.2               
-[163] Cairo_1.6-2               spatstat.data_3.1-6       rstudioapi_0.17.1        
-[166] cluster_2.1.8.1           whisker_0.4.1             mutoss_0.1-13            
-[169] spatstat.utils_3.1-4      hms_1.1.3                 fitdistrplus_1.2-2       
-[172] cowplot_1.1.3             colorspace_2.1-1          rlang_1.1.6              
-[175] DelayedMatrixStats_1.26.0 sparseMatrixStats_1.16.0  xts_0.14.1               
-[178] dotCall64_1.2             shinydashboard_0.7.3      ggforce_0.4.2            
-[181] laeken_0.5.3              mgcv_1.9-3                xfun_0.52                
-[184] e1071_1.7-16              TH.data_1.1-3             iterators_1.0.14         
-[187] abind_1.4-8               GOSemSim_2.30.2           treeio_1.28.0            
-[190] futile.options_1.0.1      bitops_1.0-9              Rdpack_2.6.4             
-[193] promises_1.3.3            scatterpie_0.2.4          RSQLite_2.4.0            
-[196] qvalue_2.36.0             sandwich_3.1-1            fgsea_1.30.0             
-[199] DelayedArray_0.30.1       proxy_0.4-27              GO.db_3.19.1             
-[202] compiler_4.4.0            prettyunits_1.2.0         boot_1.3-31              
-[205] beachmat_2.20.0           listenv_0.9.1             Rcpp_1.0.14              
-[208] edgeR_4.2.2               workflowr_1.7.1           BiocSingular_1.20.0      
-[211] tensor_1.5                MASS_7.3-65               progress_1.2.3           
-[214] BiocParallel_1.38.0       babelgene_22.9            spatstat.random_3.4-1    
-[217] R6_2.6.1                  fastmap_1.2.0             multcomp_1.4-28          
-[220] fastmatch_1.1-6           rstatix_0.7.2             vipor_0.4.7              
-[223] TTR_0.24.4                ROCR_1.0-11               TFisher_0.2.0            
-[226] rsvd_1.0.5                vcd_1.4-13                nnet_7.3-20              
-[229] gtable_0.3.6              KernSmooth_2.23-26        miniUI_0.1.2             
-[232] deldir_2.0-4              htmltools_0.5.8.1         ggthemes_5.1.0           
-[235] bit64_4.6.0-1             spatstat.explore_3.4-3    lifecycle_1.0.4          
-[238] blme_1.0-6                nloptr_2.2.1              sass_0.4.10              
-[241] vctrs_0.6.5               robustbase_0.99-4-1       spatstat.geom_3.4-1      
-[244] sn_2.1.1                  ggfun_0.1.8               future.apply_1.11.3      
-[247] bslib_0.9.0               pillar_1.10.2             gplots_3.2.0             
-[250] pcaMethods_1.96.0         locfit_1.5-9.12           jsonlite_2.0.0           
-[253] GetoptLong_1.0.5         </code></pre>
+ [76] knn.covertree_1.0         ggtree_3.12.0             data.table_1.17.4        
+ [79] R.oo_1.27.1               RSpectra_0.16-2           irlba_2.3.5.1            
+ [82] ggrastr_1.0.2             gridGraphics_0.5-1        fastDummies_1.7.5        
+ [85] lazyeval_0.2.2            yaml_2.3.10               survival_3.8-3           
+ [88] scattermore_1.2           crayon_1.5.3              RcppAnnoy_0.0.22         
+ [91] RColorBrewer_1.1-3        progressr_0.15.1          tweenr_2.0.3             
+ [94] later_1.4.2               ggridges_0.5.6            codetools_0.2-20         
+ [97] GlobalOptions_0.1.2       aod_1.3.3                 KEGGREST_1.44.1          
+[100] Rtsne_0.17                shape_1.4.6.1             limma_3.60.6             
+[103] pkgconfig_2.0.3           TMB_1.9.17                spatstat.univar_3.1-3    
+[106] mathjaxr_1.8-0            EnvStats_3.1.0            aplot_0.2.5              
+[109] scatterplot3d_0.3-44      ape_5.8-1                 spatstat.sparse_3.1-0    
+[112] xtable_1.8-4              car_3.1-3                 plyr_1.8.9               
+[115] httr_1.4.7                rbibutils_2.3             tools_4.4.0              
+[118] globals_0.18.0            beeswarm_0.4.0            broom_1.0.8              
+[121] nlme_3.1-168              lambda.r_1.2.4            assertthat_0.2.1         
+[124] lme4_1.1-37               digest_0.6.37             numDeriv_2016.8-1.1      
+[127] Matrix_1.7-3              farver_2.1.2              tzdb_0.5.0               
+[130] remaCor_0.0.18            reshape2_1.4.4            yulab.utils_0.2.0        
+[133] glue_1.8.0                cachem_1.1.0              polyclip_1.10-7          
+[136] generics_0.1.4            Biostrings_2.72.1         mvtnorm_1.3-3            
+[139] parallelly_1.45.0         mnormt_2.1.1              statmod_1.5.0            
+[142] RcppHNSW_0.6.0            ScaledMatrix_1.12.0       carData_3.0-5            
+[145] minqa_1.2.8               pbapply_1.7-2             httr2_1.1.2              
+[148] spam_2.11-1               gson_0.1.0                graphlayouts_1.2.2       
+[151] gtools_3.9.5              ggsignif_0.6.4            RcppEigen_0.3.4.0.2      
+[154] shiny_1.10.0              GenomeInfoDbData_1.2.12   glmmTMB_1.1.11           
+[157] R.utils_2.13.0            memoise_2.0.1             rmarkdown_2.29           
+[160] scales_1.4.0              R.methodsS3_1.8.2         future_1.58.0            
+[163] RANN_2.6.2                Cairo_1.6-2               spatstat.data_3.1-6      
+[166] rstudioapi_0.17.1         cluster_2.1.8.1           whisker_0.4.1            
+[169] mutoss_0.1-13             spatstat.utils_3.1-4      hms_1.1.3                
+[172] fitdistrplus_1.2-2        cowplot_1.1.3             colorspace_2.1-1         
+[175] rlang_1.1.6               DelayedMatrixStats_1.26.0 sparseMatrixStats_1.16.0 
+[178] xts_0.14.1                dotCall64_1.2             shinydashboard_0.7.3     
+[181] ggforce_0.4.2             laeken_0.5.3              mgcv_1.9-3               
+[184] xfun_0.52                 e1071_1.7-16              TH.data_1.1-3            
+[187] iterators_1.0.14          abind_1.4-8               GOSemSim_2.30.2          
+[190] treeio_1.28.0             futile.options_1.0.1      bitops_1.0-9             
+[193] Rdpack_2.6.4              promises_1.3.3            scatterpie_0.2.4         
+[196] RSQLite_2.4.0             qvalue_2.36.0             sandwich_3.1-1           
+[199] fgsea_1.30.0              DelayedArray_0.30.1       proxy_0.4-27             
+[202] GO.db_3.19.1              compiler_4.4.0            prettyunits_1.2.0        
+[205] boot_1.3-31               beachmat_2.20.0           listenv_0.9.1            
+[208] Rcpp_1.0.14               edgeR_4.2.2               workflowr_1.7.1          
+[211] BiocSingular_1.20.0       tensor_1.5                MASS_7.3-65              
+[214] progress_1.2.3            BiocParallel_1.38.0       babelgene_22.9           
+[217] spatstat.random_3.4-1     R6_2.6.1                  fastmap_1.2.0            
+[220] multcomp_1.4-28           fastmatch_1.1-6           rstatix_0.7.2            
+[223] vipor_0.4.7               TTR_0.24.4                ROCR_1.0-11              
+[226] TFisher_0.2.0             rsvd_1.0.5                vcd_1.4-13               
+[229] nnet_7.3-20               gtable_0.3.6              KernSmooth_2.23-26       
+[232] miniUI_0.1.2              deldir_2.0-4              htmltools_0.5.8.1        
+[235] ggthemes_5.1.0            bit64_4.6.0-1             spatstat.explore_3.4-3   
+[238] lifecycle_1.0.4           blme_1.0-6                nloptr_2.2.1             
+[241] sass_0.4.10               vctrs_0.6.5               robustbase_0.99-4-1      
+[244] spatstat.geom_3.4-1       sn_2.1.1                  ggfun_0.1.8              
+[247] future.apply_1.11.3       bslib_0.9.0               pillar_1.10.2            
+[250] gplots_3.2.0              pcaMethods_1.96.0         locfit_1.5-9.12          
+[253] jsonlite_2.0.0            GetoptLong_1.0.5         </code></pre>
 </div>
 </div>
 </div>

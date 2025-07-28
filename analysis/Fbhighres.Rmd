@@ -9,6 +9,13 @@ output:
 editor_options: 
   chunk_output_type: inline
 ---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
 ## load packages
 ```{r load packages, warning=FALSE, include=FALSE}
 library(ExploreSCdataSeurat3)
@@ -38,47 +45,40 @@ library(VennDiagram)
 library(NCmisc)
 ```
 
-```{r setup, include=FALSE}
-options(width = 100)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
-seed <- 1234
-```
-
 ## load object
-```{r load merged object, eval=FALSE, include=FALSE}
+```{r}
 fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
 seuratM <- readRDS(fileNam)
 ```
 
 ## set color vectors 
-```{r set color vector}
-colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429")
-names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
+```{r}
+colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","#bac1d1")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell","Mph3")
 
 coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
 names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
 ```
 
-## subset Fb, PerivFb, VSMC
-```{r subset Fb PerivFb VSMC, eval=FALSE, include=TRUE}
+```{r}
+## check umap
 Idents(seuratM) <- seuratM$clusterName
-seuratAllFb <- subset(seuratM, idents = c("Fb1", "Fb2", "Fb3", "PerivFb1", "PerivFb2", "VSMC"))
+DimPlot(seuratM, reduction = "umap", cols = colclusterName, label= TRUE)
+```
+
+## subset Fb, PerivFb, VSMC (AllFb)
+```{r}
+## subset Fb, PerivFb and VSMC
+seuratAllFb <- subset(seuratM, idents = c("Fb1", "Fb2", "PerivFb1", "VSMC")) ## exclude Fb3 and PerivFb2 - int cells/doublets
 levels(seuratAllFb)
 table(seuratAllFb$orig.ident)
 table(seuratAllFb$clusterName)
-DimPlot(seuratAllFb, reduction = "umap", cols = colclusterName)
-remove(seuratM)
+DimPlot(seuratAllFb, reduction = "umap", cols = colclusterName, label=TRUE)
 ```
 
+## rerun seurat AllFb 
+```{r, eval=FALSE, include=TRUE}
 ## rerun seurat
-```{r rerun seuratAllFb, eval=FALSE, include=TRUE}
-##recreate assay 
-seuratAllFb@assays$RNA@layers$data = NULL
-seuratAllFb@assays$RNA@layers$scale.data = NULL
-counts = GetAssayData(seuratAllFb, assay = "RNA", layer = "counts")
-seuratAllFb[["RNA"]] = CreateAssayObject(counts = counts)
-
-##rerun seurat
 seuratAllFb <- NormalizeData (object = seuratAllFb)
 seuratAllFb <- FindVariableFeatures(object = seuratAllFb)
 seuratAllFb <- ScaleData(object = seuratAllFb, verbose = TRUE)
@@ -96,10 +96,8 @@ table(seuratAllFb$orig.ident)
 table(seuratAllFb$RNA_snn_res.0.25)
 ```
 
-
-
 ## load file AllFb
-```{r load file AllFb}
+```{r}
 fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds"
 seuratAllFb <- readRDS(fileNam)
 table(seuratAllFb$dataset)
@@ -107,7 +105,7 @@ table(seuratAllFb$RNA_snn_res.0.25)
 table(seuratAllFb$orig.ident)
 ```
 
-```{r assign cluter, include=TRUE, eval=FALSE}
+```{r, include=TRUE, eval=FALSE}
 #### cluster_name_Fb
 seuratAllFb$clusterNameAllFb <- "clusterNameAllFb"
 seuratAllFb$clusterNameAllFb[which(seuratAllFb$RNA_snn_res.0.25 %in% "0" )] <- "Fb1"
@@ -129,7 +127,7 @@ Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
 table(seuratAllFb$clusterNameAllFb)
 ```
 
-```{r save merged seurat object, eval=FALSE, include=TRUE}
+```{r, eval=FALSE, include=TRUE}
 ### save seurat object
 saveRDS(seuratAllFb, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds")
 ```
@@ -141,7 +139,7 @@ names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5"
 ```
 
 ## umaps
-```{r umaps}
+```{r umaps AllFb}
 Idents(seuratAllFb) <- seuratAllFb$RNA_snn_res.0.25
 DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, label = TRUE)
 
@@ -153,27 +151,27 @@ DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label =
 DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb)  + theme(legend.position = "null")
 
 Idents(seuratAllFb) <- seuratAllFb$diseaseCond
-DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond)
-DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond) + theme(legend.position = "null")
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond, shuffle= TRUE)
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond, shuffle = TRUE) + theme(legend.position = "null")
 ```
-## calculate cluster marker genes
-```{r cluster marker genes, include=TRUE, eval=FALSE}
-##cluster marker
-Idents(seuratAllFb) <- seuratAllFb$RNA_snn_res.0.25
+## calculate cluster marker genes AllFb
+```{r, include=TRUE, eval=FALSE}
+## cluster marker
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
 markerGenes <- FindAllMarkers(seuratAllFb, only.pos=T) %>% 
   dplyr::filter(p_val_adj < 0.01)
 
-#save table
+## save table
 write.table(markerGenes, 
-            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/analysis/markerGenesAllFbRNA_snn_res.0.25",
+            file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/markerGenesAllFb_clusterNameAllFb",
             sep="\t",
             quote=F,
             row.names=F,
             col.names=T)
 ```
 
-## BMP features 
-```{r features}
+### BMP features 
+```{r features BMP AllFb}
 genes <- data.frame(gene=rownames(seuratAllFb)) %>% 
   mutate(geneID=gsub("^.*\\.", "", gene))
 
@@ -181,14 +179,16 @@ selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2
   left_join(., genes, by="geneID")
 
 pList <- sapply(selGenes$gene, function(x){
-  p <- FeaturePlot(seuratAllFb, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE) +
+  p <- FeaturePlot(seuratAllFb, features = x, 
+                   reduction = "umap", pt.size = 0.1, 
+                   cols = c("lightgrey", "#BE3144"), 
+                   raster = FALSE) +
     theme(legend.position="right")
   plot(p)
 })
 ```
-
-## BMP features ordered
-```{r features ordered}
+### BMP featuresb ordered
+```{r features BMP ordered AllFb}
 genes <- data.frame(gene=rownames(seuratAllFb)) %>% 
   mutate(geneID=gsub("^.*\\.", "", gene))
 
@@ -196,14 +196,18 @@ selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2
   left_join(., genes, by="geneID")
 
 pList <- sapply(selGenes$gene, function(x){
-  p <- FeaturePlot(seuratAllFb, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE, order=TRUE) +
+  p <- FeaturePlot(seuratAllFb, features = x, 
+                   reduction = "umap", pt.size = 0.1, 
+                   cols = c("lightgrey", "#BE3144"), 
+                   raster = FALSE, 
+                   order=TRUE) +
     theme(legend.position="right")
   plot(p)
 })
 ```
 
-##violin plots
-```{r}
+### BMP violin plots
+```{r violin plots BMP AllFb}
 Idents(seuratAllFb) <- seuratAllFb$diseaseCond
 pList <- sapply(selGenes$gene, function(x){
   p <- VlnPlot( object = seuratAllFb, features = x, pt.size = 1, cols=coldiseaseCond)
@@ -211,8 +215,8 @@ pList <- sapply(selGenes$gene, function(x){
 })
 ```
 
-##violin plots
-```{r}
+### violin plots
+```{r violin plots AllFb}
 Idents(seuratAllFb) <- seuratAllFb$diseaseCond
 pList <- sapply(selGenes$gene, function(x){
   p <- VlnPlot( object = seuratAllFb, features = x, pt.size = 0, cols=coldiseaseCond)
@@ -222,7 +226,7 @@ pList <- sapply(selGenes$gene, function(x){
 
 ## abundance plots
 ### dataset
-```{r abundance dataset, fig.height=10, fig.width=10}
+```{r abundance dataset AllFb, fig.height=10, fig.width=10}
 order_keywords <- c("HH", "RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002", "V1", "V2","V3")
 files <- unique(seuratAllFb$dataset)
 ordered_files <- c()
@@ -246,7 +250,7 @@ ggbarplot(dat_all, x= "dataset", y= "percent", fill = "Var1", palette = colAllFb
 ```
 
 ### patient_diseaseCond
-```{r abundance patient_diseaseCond, fig.height=8, fig.width=10}
+```{r abundance patient_diseaseCond AllFb, fig.height=8, fig.width=10}
 order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant")
 files <- unique(seuratAllFb$patient_diseaseCond)
 ordered_files <- c()
@@ -270,7 +274,7 @@ ggbarplot(dat_all, x= "patient_diseaseCond", y= "percent", fill = "Var1", palett
 ```
 
 ### diseaseCond
-```{r abundance diseaseCond, fig.height=8, fig.width=10}
+```{r abundance diseaseCoond AllFb, fig.height=8, fig.width=10}
 orddiseaseCond <- c("healthy","visit1", "visit2" ,"visit3", "explant")
 
 ###diseaseCond
@@ -286,6 +290,108 @@ dat_all <- do.call("rbind", datList)
 
 ## plot abundance
 ggbarplot(dat_all, x= "diseaseCond", y= "percent", fill = "Var1", palette = colAllFb, legend = "right", legend.titel = "cluster", ylab = "frequency")  + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + scale_x_discrete(limits=orddiseaseCond)
+```
+
+## subset IntFb
+```{r}
+## subset IntFb
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+seuratIntFb <- subset(seuratAllFb, idents = c("Fb1", "Fb2", "Fb3", "Fb4", "Fb5"))
+table(seuratIntFb$clusterNameAllFb)
+
+DimPlot(seuratIntFb, reduction = "umap", cols = colAllFb, label=TRUE)
+```
+
+## rerun seurat IntFb
+```{r, eval=FALSE, include=TRUE}
+## rerun seurat
+seuratIntFb <- NormalizeData (object = seuratIntFb)
+seuratIntFb <- FindVariableFeatures(object = seuratIntFb)
+seuratIntFb <- ScaleData(object = seuratIntFb, verbose = TRUE)
+seuratIntFb <- RunPCA(object=seuratIntFb, npcs = 30, verbose = FALSE)
+seuratIntFb <- RunTSNE(object=seuratIntFb, reduction="pca", dims = 1:20)
+seuratIntFb <- RunUMAP(object=seuratIntFb, reduction="pca", dims = 1:20)
+seuratIntFb <- FindNeighbors(object = seuratIntFb, reduction = "pca", dims= 1:20)
+
+res <- c(0.25, 0.6, 0.8, 0.4, 0.1)
+for (i in 1:length(res)) {
+  seuratIntFb <- FindClusters(object = seuratIntFb, resolution = res[i], random.seed = 1234)
+}
+
+table(seuratIntFb$orig.ident)
+table(seuratIntFb$RNA_snn_res.0.25)
+```
+
+```{r, include=TRUE, eval=FALSE}
+## clustername IntFb
+seuratIntFb$clusterNameIntFb <- "clusterNameIntFb"
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% "0" )] <- "Fb1/2"
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% "1" )] <- "Fb3"
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% "2" )] <- "Fb4"
+seuratIntFb$clusterNameIntFb[which(seuratIntFb$RNA_snn_res.0.1 %in% "3" )] <- "Fb5"
+
+table(seuratIntFb$clusterNameIntFb)
+table(seuratIntFb$RNA_snn_res.0.1)
+
+## order
+Idents(seuratIntFb) <- seuratIntFb$clusterNameIntFb
+seuratIntFb$clusterNameIntFb <- factor(seuratIntFb$clusterNameIntFb, levels=c("Fb1/2", "Fb3", "Fb4", "Fb5"))
+Idents(seuratIntFb) <- seuratIntFb$clusterNameIntFb
+table(seuratIntFb$clusterNameIntFb)
+```
+
+```{r, eval=FALSE, include=TRUE}
+### save seurat object
+saveRDS(seuratIntFb, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds")
+```
+
+## load file IntFb
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb.rds"
+seuratIntFb <- readRDS(fileNam)
+table(seuratIntFb$clusterNameIntFb, seuratIntFb$diseaseCond)
+```
+
+```{r set color vector IntFb}
+colIntFb <- c("#D53E4F","#8e0b00","#42090D","#FFF4DF")
+names(colIntFb) <- c("Fb1/2","Fb3","Fb4", "Fb5")
+```
+
+## umaps
+```{r umaps IntFb}
+Idents(seuratIntFb) <- seuratIntFb$RNA_snn_res.0.1
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, label = TRUE)
+
+Idents(seuratIntFb) <- seuratIntFb$clusterNameAllFb
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label = TRUE, shuffle = TRUE)
+
+Idents(seuratIntFb) <- seuratIntFb$clusterNameIntFb
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, cols = colIntFb, label = TRUE, shuffle = TRUE)
+
+Idents(seuratIntFb) <- seuratIntFb$diseaseCond
+DimPlot(seuratIntFb, reduction = "umap", pt.size = 0.5, cols = coldiseaseCond, shuffle = TRUE)
+```
+
+### diffusion map
+```{r}
+pca_embeddings <- Embeddings(seuratIntFb, reduction = "pca")
+dm <- DiffusionMap(pca_embeddings)
+
+df <- data.frame(DC1 = eigenvectors(dm)[,1], DC2 = eigenvectors(dm)[,2])
+
+## color according to clusterAllFb
+df$cluster <- seuratIntFb$clusterNameAllFb
+
+ggplot(df, aes(x = DC1, y = DC2, color = cluster)) +
+  geom_point(size = 0.5) +
+  scale_color_manual(values = colAllFb)
+
+## color according to diseaseCond
+df$cluster <- seuratIntFb$diseaseCond
+
+ggplot(df, aes(x = DC1, y = DC2, color = cluster)) +
+  geom_point(size = 0.5) +
+  scale_color_manual(values = coldiseaseCond)
 ```
 
 ## session info

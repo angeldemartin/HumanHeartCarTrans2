@@ -45,15 +45,13 @@ library(VennDiagram)
 library(NCmisc)
 ```
 
-# load object and calculate marker genes
-## load object
 
+## load object All
 ```{r load merged object}
 fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_allmerged_seurat.rds"
 seuratM <- readRDS(fileNam)
 ```
 
-##set color vectors 
 ```{r set color vector}
 colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","grey")
 names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell", "Mph3")
@@ -75,25 +73,6 @@ pList <- sapply(selGenes$gene, function(x){
     theme(legend.position="right")
   plot(p)
 })
-
-FeaturePlot(seuratM, features = "ENSG00000125378.BMP4", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000112175.BMP5", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000125845.BMP2", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000153162.BMP6", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000168487.BMP1", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000183682.BMP8A", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000138756.BMP2K", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-
-FeaturePlot(seuratM, features = "ENSG00000107779.BMPR1A", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000204217.BMPR2", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-
-FeaturePlot(seuratM, features = "ENSG00000166923.GREM1", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000180875.GREM2", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-
-FeaturePlot(seuratM, features = "ENSG00000019991.HGF", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-FeaturePlot(seuratM, features = "ENSG00000105976.MET", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
-
-FeaturePlot(seuratM, features = "ENSG00000115602.IL1RL1", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE)
 ```
 
 ## BMP features ordered
@@ -105,8 +84,17 @@ pList <- sapply(selGenes$gene, function(x){
 })
 ```
 
+## BMP violin plots
+```{r violin plots BMP All}
+Idents(seuratM) <- seuratM$clusterName
+pList <- sapply(selGenes$gene, function(x){
+  p <- VlnPlot( object = seuratM, features = x, pt.size = 1, cols=colclusterName)
+  plot(p)
+})
+```
+
 ## dotplot 
-```{r dotplot}
+```{r dotplot, fig.width=15, fig.height=8}
 genes <- data.frame(gene=rownames(seuratM)) %>% 
   mutate(geneID=gsub("^.*\\.", "", gene))
 
@@ -114,7 +102,6 @@ selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2
 
 DotPlot(seuratM, features = selGenes, group.by= "clusterName") + RotatedAxis() + scale_color_viridis(option="D") + coord_flip()
 ```
-
 ## session info
 ```{r date and session info}
 date()

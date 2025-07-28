@@ -1,0 +1,170 @@
+---
+title: "slingshotAllFb"
+author: "A.DeMartin"
+date: "2025-07-21"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+## load packages
+```{r load packages, warning=FALSE, include=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+library(slingshot)
+library(RColorBrewer)
+```
+
+## load file AllFb
+```{r load file AllFb}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_AllFb.rds"
+seuratAllFb <- readRDS(fileNam)
+table(seuratAllFb$dataset)
+table(seuratAllFb$RNA_snn_res.0.25)
+table(seuratAllFb$orig.ident)
+```
+
+```{r}
+colAllFb <- c("#D53E4F","#f4a582","#ff7b7b","#8e0b00","#FEE08B","#42090D","#FF7B00","#FFF4DF")
+names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5")
+```
+
+### umap
+```{r umaps}
+Idents(seuratAllFb) <- seuratAllFb$clusterNameAllFb
+DimPlot(seuratAllFb, reduction = "umap", pt.size = 0.5, cols = colAllFb, label = TRUE)
+```
+
+### convert to sce
+```{r}
+##convert seurat object to sce object
+sce <- as.SingleCellExperiment(seuratAllFb)
+```
+
+## slingshot 
+```{r slingshot E18}
+## set Fb4 as startpoint
+sce <- slingshot(sce, clusterLabels = 'clusterNameAllFb', reducedDim = 'UMAP',
+                 start.clus="Fb4",
+                 dist.method="simple", extend = 'n', stretch=0)
+```
+
+```{r}
+clustDat <- data.frame(clustCol=colAllFb) %>% rownames_to_column(., "cluster")
+colDat <- data.frame(cluster=seuratAllFb$clusterNameAllFb)  %>% left_join(., clustDat, by="cluster") 
+```
+
+```{r slingshot-1}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, type = 'lineages', col = 'black')
+```
+
+```{r slingshot-2}
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'YlGnBu'))(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce)), breaks=100)]
+
+plot(reducedDims(sce)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'PuOr')[-6])(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce)), breaks=100)]
+
+plot(reducedDims(sce)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+```{r}
+### color lineages
+colLin <- c("#b6856e","#900C3F","#424671","#e3953d")
+names(colLin) <- c("1", "2", "3", "4")
+
+plot(reducedDims(sce)$UMAP, col = "#bfbcbd", pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=4, col=colLin)
+```
+
+## slingshot-2
+```{r slingshot-2}
+## no start point
+sce_ssh2 <- slingshot(sce, clusterLabels = 'clusterNameAllFb', reducedDim = 'UMAP',
+                 dist.method="simple", extend = 'n', stretch=0)
+```
+
+```{r slingshot-1}
+plot(reducedDims(sce_ssh2)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce_ssh2), lwd=2, type = 'lineages', col = 'black')
+```
+
+```{r slingshot-2}
+plot(reducedDims(sce_ssh2)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce_ssh2), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'YlGnBu'))(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce_ssh2)), breaks=100)]
+
+plot(reducedDims(sce_ssh2)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce_ssh2), lwd=2, col='black')
+```
+
+```{r}
+colors <- colorRampPalette(brewer.pal(11,'PuOr')[-6])(100)
+plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce_ssh2)), breaks=100)]
+
+plot(reducedDims(sce_ssh2)$UMAP, col = plotcol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce_ssh2), lwd=2, col='black')
+```
+
+```{r}
+### color lineages
+colLin <- c("#b6856e","#900C3F","#424671","#e3953d")
+names(colLin) <- c("1", "2", "3", "4")
+
+plot(reducedDims(sce_ssh2)$UMAP, col = "#bfbcbd", pch=16, asp = 1)
+lines(SlingshotDataSet(sce_ssh2), lwd=4, col=colLin)
+```
+
+## session info
+```{r date and session info}
+date()
+sessionInfo()
+```

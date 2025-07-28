@@ -156,7 +156,7 @@ seuratM$diseaseCond[grepl("V3", seuratM$dataset)] <- "visit3"
 seuratM$diseaseCond[grepl("HH", seuratM$dataset)] <- "healthy"
 seuratM$diseaseCond[grepl("RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002", seuratM$dataset)] <- "explant"
 table(seuratM$diseaseCond)
-orddiseaseCond <- c("healthy", "explant" ,"visit1", "visit2" ,"visit3")
+orddiseaseCond <- c("healthy","visit1", "visit2" ,"visit3", "explant")
 Idents(seuratM) <- seuratM$diseaseCond
 seuratM$diseaseCond <- factor(seuratM$diseaseCond, levels=orddiseaseCond)
 Idents(seuratM) <- seuratM$diseaseCond

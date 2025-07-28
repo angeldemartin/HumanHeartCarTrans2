@@ -1,0 +1,282 @@
+---
+title: "tradeseqIntFb"
+author: "A.DeMartin"
+date: "2025-07-24"
+output: 
+  html_document:
+    keep_md: true
+    toc: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+options(width = 100)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, dev = c("png", "pdf"))
+seed <- 1234
+```
+
+### load packages
+```{r load packages, warning=FALSE}
+library(ExploreSCdataSeurat3)
+library(runSeurat3)
+library(Seurat)
+library(ggpubr)
+library(pheatmap)
+library(SingleCellExperiment)
+library(dplyr)
+library(tidyverse)
+library(viridis)
+library(muscat)
+library(circlize)
+library(destiny)
+library(scater)
+library(metap)
+library(multtest)
+library(clusterProfiler)
+library(org.Hs.eg.db)
+library(msigdbr)
+library(enrichplot)
+library(DOSE)
+library(grid)
+library(gridExtra)
+library(ggupset)
+library(VennDiagram)
+library(NCmisc)
+library(slingshot)
+library(RColorBrewer)
+library(tradeSeq)
+library(scran)
+library(clusterExperiment)
+```
+
+## load slingshot-v2
+```{r load sce mLNf3 slingshot}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/Human_heart_IntFb_slingshot_sce.rds"
+sce<- readRDS(fileNam)
+```
+
+```{r}
+colAllFb <- c("#D53E4F","#f4a582","#ff7b7b","#8e0b00","#FEE08B","#42090D","#FF7B00","#FFF4DF")
+names(colAllFb) <- c("Fb1","PerivFb1","Fb2","Fb3","VSMC","Fb4","PerivFb2", "Fb5")
+
+colIntFb <- c("#D53E4F","#8e0b00","#42090D","#FFF4DF")
+names(colIntFb) <- c("Fb1/2","Fb3","Fb4", "Fb5")
+
+coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
+names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+```{r}
+clustDat <- data.frame(clustCol=colAllFb) %>% rownames_to_column(., "cluster")
+colDat <- data.frame(cluster=sce$clusterNameAllFb)  %>% left_join(., clustDat, by="cluster") 
+
+plot(reducedDims(sce)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sce), lwd=2, col='black')
+```
+
+## tradeSeq
+### evaluate k
+```{r eval k, eval=FALSE, include=TRUE}
+icMat <- evaluateK(counts = counts(sce), sds = SlingshotDataSet(sce), k = 3:10, 
+                   nGenes = 200, verbose = T)
+```
+
+### plot results from icMat
+```{r, eval=FALSE, include=TRUE}
+write.table(icMat, file= "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/icMat.txt", sep = "\t", quote = FALSE, row.names = TRUE)
+
+icMat_clean <- icMat[complete.cases(icMat), ]
+## Convert to data frame
+avg_df <- data.frame(
+  k = colnames(icMat_clean),
+  AvgAIC = colMeans(icMat_clean)
+)
+
+## Preserve gene order if needed
+avg_df$k <- factor(avg_df$k, levels = avg_df$k)
+
+ggplot(avg_df, aes(x = k, y = AvgAIC, group = 1)) +
+  geom_line(color = "steelblue") +
+  geom_point(color = "darkred", size = 1.5) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 6)
+  ) +
+  labs(x = "k", y = "Average AIC")
+```
+
+### subsample sce
+```{r}
+dim(sce)
+```
+
+```{r}
+cellSub <- data.frame(cell=colnames(sce)) %>% sample_n(5000)
+sceSub <- sce[,cellSub$cell]
+dim(sceSub)
+```
+
+### load sce Sub
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_sce.rds"
+sceSub <- readRDS(fileNam)
+```
+
+```{r}
+colDat <- data.frame(cluster=sceSub$clusterNameAllFb)  %>% left_join(., clustDat, by="cluster") 
+ 
+plot(reducedDims(sceSub)$UMAP, col = colDat$clustCol, pch=16, asp = 1)
+lines(SlingshotDataSet(sceSub), lwd=2, col='black')
+```
+
+## fitGAM
+```{r, eval=FALSE,include=TRUE}
+## only hvg
+dec.sce <- modelGeneVar(sce)
+df_dec_sce <- as.data.frame(dec.sce)
+
+dec.sceSub <- modelGeneVar(sceSub)
+df_dec_sceSub <- as.data.frame(dec.sceSub)
+
+topHVG <- getTopHVGs(dec.sceSub, n= 2000)
+topHVG_df <- df_dec_sceSub[rownames(df_dec_sceSub) %in% topHVG, ]
+sel.genes <- c("ENSG00000166923.GREM1", "ENSG00000180875.GREM2", "ENSG00000107779.BMPR1A", "ENSG00000204217.BMPR2", 
+               "ENSG00000138756.BMP2K", "ENSG00000183682.BMP8A", "ENSG00000168487.BMP1", "ENSG00000153162.BMP6", 
+               "ENSG00000125845.BMP2", "ENSG00000112175.BMP5", "ENSG00000125378.BMP4")
+topGenes <- c(topHVG, sel.genes)
+duplicates <- topGenes[duplicated(topGenes)]
+print(duplicates)
+topGenes_u <- unique(topGenes)
+
+agsgrpseudotime <- slingPseudotime(SlingshotDataSet(sce), na = FALSE) 
+pseudotimeSub <- pseudotime[cellSub$cell,]
+cellWeights <- slingCurveWeights(SlingshotDataSet(sce))
+cellWeightsSub <- cellWeights[cellSub$cell,]
+
+sceGAM <- fitGAM(counts = counts(sceSub), pseudotime = pseudotimeSub, 
+                cellWeights = cellWeightsSub,
+                nknots = 9, verbose = T, parallel=T, genes=topGenes_u)
+```
+
+```{r, eval=FALSE, include=TRUE}
+## save
+saveRDS(sceGAM, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_sceGAM.rds")
+
+saveRDS(sceSub, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_sce.rds")
+
+saveRDS(pseudotimeSub, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_pseudotime.rds")
+
+saveRDS(cellWeightsSub, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_cellweights.rds")
+
+saveRDS(topHVG, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_topHVG.rds")
+```
+
+### load GAM
+```{r}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_sceGAM.rds"
+sceGAM <- readRDS(fileNam)
+table(rowData(sceGAM)$tradeSeq$converged)
+```
+
+### Between lineage comparison
+```{r}
+patternRes <- patternTest(sceGAM, l2fc = log2(2))
+oPat <- order(patternRes$waldStat, decreasing = TRUE)
+head(rownames(patternRes)[oPat])
+```
+
+### plot top50
+```{r}
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+rankGene <- rownames(patternRes)[oPat]
+lapply(rankGene[1:50], function(selGene){
+  plotSmoothers(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
+    ggtitle(selGene) +
+    scale_color_manual(values=colLin)
+})
+```
+
+### plot selected
+```{r}
+## selected genes
+selGene <- c("ENSG00000166923.GREM1", "ENSG00000180875.GREM2", "ENSG00000107779.BMPR1A", "ENSG00000204217.BMPR2", 
+               "ENSG00000138756.BMP2K", "ENSG00000183682.BMP8A", "ENSG00000168487.BMP1", "ENSG00000153162.BMP6", 
+               "ENSG00000125845.BMP2", "ENSG00000112175.BMP5", "ENSG00000125378.BMP4")
+
+lapply(selGene,function(selGene){
+  plotSmoothers(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
+    ggtitle(selGene) +
+    scale_color_manual(values=colLin)
+})
+```
+
+### cluster genes betweeen lineages
+```{r}
+nPointsClus <- 100
+```
+
+```{r cluster genes, include=TRUE, eval=FALSE}
+clusPat <- clusterExpressionPatterns(sceGAM, nPoints = nPointsClus,
+                                     genes = rankGene[1:500], nReducedDims=20)
+```
+
+```{r save, include=TRUE, eval=FALSE}
+saveRDS(clusPat, file =  "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_clusPat.rds")
+```
+
+### load clusPat
+```{r load}
+fileNam <- "/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/Human_heart_IntFb_slingshot_TSsub5000_clusPat.rds"
+clusPat <- readRDS(fileNam)
+```
+
+```{r}
+clusterLabels <- primaryCluster(clusPat$rsec)
+
+cUniq <- unique(clusterLabels)
+cUniq <- cUniq[!cUniq == -1] # remove unclustered genes
+
+for (xx in cUniq) {
+  cId <- which(clusterLabels == xx)
+  p <- ggplot(data = data.frame(x = 1:nPointsClus,
+                                y = rep(range(clusPat$yhatScaled[cId, ]),
+                                        nPointsClus / 2)),
+              aes(x = x, y = y)) +
+    geom_point(alpha = 0) +
+    labs(title = paste0("Cluster ", xx),  x = "Pseudotime", y = "Normalized expression") +
+    theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5))
+  for (ii in 1:length(cId)) {
+    geneId <- rownames(clusPat$yhatScaled)[cId[ii]]
+    p <- p +
+      geom_line(data = data.frame(x = rep(1:nPointsClus, 2),
+                                  y = clusPat$yhatScaled[geneId, ],
+                                  lineage = rep(1:2, each = nPointsClus)),
+                aes(col = as.character(lineage), group = lineage), lwd = 1.5)
+  }
+  p <- p + guides(color = FALSE) +
+    scale_color_manual(values = colLin,
+                       breaks = c("1", "2"))  
+  print(p)
+}
+```
+
+```{r, include=TRUE, eval=FALSE}
+clustList <- lapply(cUniq, function(cl){
+  cId <- which(clusterLabels == cl)
+  genes <- rownames(clusPat$yhatScaled)[cId]
+}) 
+
+names(clustList) <- cUniq
+
+saveRDS(clustList, file="/Users/immbio/Desktop/Project/Angelina/HumanHeartCarTrans2/data/tradeSEQ/diffLinGeneCluster.rds")
+```
+
+### session info
+```{r date and session info}
+date()
+sessionInfo()
+```
