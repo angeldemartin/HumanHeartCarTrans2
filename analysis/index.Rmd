@@ -8,20 +8,20 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Merge-QC-UMAPS. 
+## merge All
 merge QC and display umaps
 [link](Merge-QC-UMAPS.html)
 
-### MarkerGenes. 
-Calculate and plot marker and DE genes
+### marker genes
+calculate and plot marker and DE genes
 [link](Marker_Genes.html)
 
-### Abundances. 
+### abundances
 Relative abundance
 [link](Abundances.html)
 
-### BMP_HGF. 
-Expression of BMP and HGF signaling genes
+### BMP features
+Expression of BMP signaling genes
 [link](BMP_HGF.html)
 
 ## Fb high resolution
@@ -41,7 +41,7 @@ Trajectory
 TradeSEQ
 [link](tradeseqIntFb.html)
 
-### T cells high resolution
+## T cells high resolution
 Tcells
 [link](Tcellhighres.html)
 
