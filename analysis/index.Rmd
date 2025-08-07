@@ -20,6 +20,10 @@ calculate and plot marker and DE genes
 Relative abundance
 [link](Abundances.html)
 
+### features
+Selected genes
+[link](features.html)
+
 ### BMP features
 Expression of BMP signaling genes
 [link](BMP_HGF.html)
