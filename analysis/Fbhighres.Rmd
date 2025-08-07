@@ -227,7 +227,7 @@ pList <- sapply(selGenes$gene, function(x){
 ## abundance plots
 ### dataset
 ```{r abundance dataset AllFb, fig.height=10, fig.width=10}
-order_keywords <- c("HH", "RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002", "V1", "V2","V3")
+order_keywords <- c("HH","V1", "V2","V3","RV|LV|expLV|expRV|331571_3-5_20231012_Hu_nucseq_USZ_HTx001|331571_4-6_20231012_Hu_nucseq_USZ_HTx002")
 files <- unique(seuratAllFb$dataset)
 ordered_files <- c()
 for (key in order_keywords) {
@@ -251,7 +251,7 @@ ggbarplot(dat_all, x= "dataset", y= "percent", fill = "Var1", palette = colAllFb
 
 ### patient_diseaseCond
 ```{r abundance patient_diseaseCond AllFb, fig.height=8, fig.width=10}
-order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant")
+order_keywords <- c("healthy", "visit1", "visit2", "visit3", "explant", "explant")
 files <- unique(seuratAllFb$patient_diseaseCond)
 ordered_files <- c()
 for (key in order_keywords) {

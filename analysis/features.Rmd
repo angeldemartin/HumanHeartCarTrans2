@@ -74,6 +74,21 @@ pList <- sapply(selGenes$gene, function(x){
 })
 ```
 
+## BMP features
+```{r BMP features}
+genes <- data.frame(gene=rownames(seuratM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("BMPER")) %>% 
+  left_join(., genes, by="geneID")
+
+pList <- sapply(selGenes$gene, function(x){
+  p <- FeaturePlot(seuratM, features = x, reduction = "umap", pt.size = 0.1, cols = c("lightgrey", "#BE3144"), raster = FALSE) +
+    theme(legend.position="right")
+  plot(p)
+})
+```
+
 ## session info
 ```{r date and session info}
 date()

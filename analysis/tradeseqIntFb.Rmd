@@ -179,6 +179,52 @@ sceGAM <- readRDS(fileNam)
 table(rowData(sceGAM)$tradeSeq$converged)
 ```
 
+## Within lineage comparison
+```{r}
+assosRes <- associationTest(sceGAM)
+head(assosRes)
+```
+
+```{r}
+## comparing start and end point
+startRes <- startVsEndTest(sceGAM)
+oStart <- order(startRes$waldStat, decreasing = TRUE)
+head(rownames(startR)[oStart])
+```
+
+### plot top50
+```{r}
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+rankGene <- rownames(startRes)[oStart]
+lapply(rankGene[1:50], function(selGene){
+  plotSmoothers(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
+    ggtitle(selGene) +
+    scale_color_manual(values=colLin)
+})
+```
+
+```{r}
+## comparing selected pseutotime values
+startRes <- startVsEndTest(sceGAM, pseudotimeValues = c(0.1, 10))
+oStart <- order(startRes$waldStat, decreasing = TRUE)
+head(rownames(startR)[oStart])
+```
+
+### plot top50
+```{r}
+colLin <- c("#D53E4F","#FFF4DF")
+names(colLin) <- c("1", "2")
+
+rankGene <- rownames(startRes)[oStart]
+lapply(rankGene[1:50], function(selGene){
+  plotSmoothers(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
+    ggtitle(selGene) +
+    scale_color_manual(values=colLin)
+})
+```
+
 ### Between lineage comparison
 ```{r}
 patternRes <- patternTest(sceGAM, l2fc = log2(2))
@@ -208,6 +254,20 @@ selGene <- c("ENSG00000166923.GREM1", "ENSG00000180875.GREM2", "ENSG00000107779.
 
 lapply(selGene,function(selGene){
   plotSmoothers(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
+    ggtitle(selGene) +
+    scale_color_manual(values=colLin)
+})
+```
+
+### plot selected
+```{r}
+## selected genes
+selGene <- c("ENSG00000166923.GREM1", "ENSG00000180875.GREM2", "ENSG00000107779.BMPR1A", "ENSG00000204217.BMPR2", 
+               "ENSG00000138756.BMP2K", "ENSG00000183682.BMP8A", "ENSG00000168487.BMP1", "ENSG00000153162.BMP6", 
+               "ENSG00000125845.BMP2", "ENSG00000112175.BMP5", "ENSG00000125378.BMP4")
+
+lapply(selGene,function(selGene){
+  plotGeneCount(sceGAM, counts(sceGAM), gene = selGene, curvesCols=colLin) +
     ggtitle(selGene) +
     scale_color_manual(values=colLin)
 })

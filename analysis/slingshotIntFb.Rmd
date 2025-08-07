@@ -45,6 +45,7 @@ library(VennDiagram)
 library(NCmisc)
 library(slingshot)
 library(RColorBrewer)
+library(fields)
 ```
 
 ## load file IntFb
@@ -143,10 +144,17 @@ lines(SlingshotDataSet(sce), lwd=2, col='black')
 
 ```{r}
 colors <- colorRampPalette(brewer.pal(11,'YlGnBu'))(100)
-plotcol <- colors[cut(slingAvgPseudotime(SlingshotDataSet(sce)), breaks=100)]
+pseudotime <- slingAvgPseudotime(SlingshotDataSet(sce))
+plotcol <- colors[cut(pseudotime, breaks=100)]
 
 plot(reducedDims(sce)$UMAP, col = plotcol, pch=16, asp = 1)
 lines(SlingshotDataSet(sce), lwd=2, col='black')
+
+## add color bar legend
+image.plot(legend.only = TRUE, 
+           zlim = range(pseudotime, na.rm = TRUE), 
+           col = colors, 
+           legend.args = list(text = "Pseudotime", side = 4, line = 2.5))
 ```
 
 ```{r}

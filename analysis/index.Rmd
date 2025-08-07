@@ -28,10 +28,15 @@ Selected genes
 Expression of BMP signaling genes
 [link](BMP_HGF.html)
 
+
 ## Fb high resolution
 ### Subset and characterize
 Fb
 [link](Fbhighres.html)
+
+### features
+Selected genes
+[link](Fbfeatures.html)
 
 ### GSEA and infl signatures
 GSEA
