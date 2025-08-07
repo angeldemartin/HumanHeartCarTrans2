@@ -56,10 +56,16 @@ seuratM <- readRDS(fileNam)
 ##set color vectors 
 ```{r set color vector}
 colclusterName <- c("#67001f", "#f4a582","#D53E4F", "#FEE08B","#8c510a","#003c30","#01665e","#66C2A5", "#3288BD","#BEAED4", "#c7eae5", "#B09C85", "#4e5a4c","#393A3F","#355C7D","#202547","#B45B5C","#725663FF","#232429","grey")
-names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell", "Mph3")
+names(colclusterName) <- c("CM","Fb1","Fb2","Fb3","PerivFb1","PerivFb2","VSMC","BEC1","BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell","Mph3")
 
 coldiseaseCond <- c("#dfc27d","#BE3144","#202547","#355C7D","#779d8d")
 names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
+```
+
+## plot umap
+```{r, fig.height=10.5, fig.width=14.85}
+Idents(seuratM) <- seuratM$clusterName
+DimPlot(seuratM, reduction = "umap", pt.size = 0.1, cols = colclusterName, raster = FALSE, label = TRUE)
 ```
 
 ## calculate cluster marker genes
@@ -78,7 +84,6 @@ write.table(markerGenes,
 ```
 
 # plot marker genes
-
 ## dotplot marker genes
 ```{r dotplot marker genes, fig.height=8, fig.width=10}
 seuratM$clusterName <- factor(seuratM$clusterName, levels=c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Mph3","Tcell1","Tcell2","Mastcell"))
@@ -151,7 +156,7 @@ avgHeatmap <- function(seurat, selGenes, colVecIdent, colVecCond=NULL,
   logNormExpresMa <- logNormExpresMa[selGenes,]
   if(is.null(ordVec)){
   ordVec <- levels(seurat)
-  ordVec <-c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Tcell1","Tcell2","Mastcell")
+  ordVec <-c("CM","Fb1","Fb2", "Fb3","PerivFb1","PerivFb2","VSMC","BEC1", "BEC2","BEC3","LEC","NC","Baror","Adipoc","Mph1","Mph2","Mph3","Tcell1","Tcell2","Mastcell")
   }
   logNormExpresMa <- logNormExpresMa[,ordVec]
 
