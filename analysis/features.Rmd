@@ -74,6 +74,16 @@ pList <- sapply(selGenes$gene, function(x){
 })
 ```
 
+## dotplot inflammatory genes
+```{r dotplot infl genes, fig.width=10, fig.height=6}
+genes <- data.frame(gene=rownames(seuratM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("IL1B", "IL1R1", "IL6", "IL6R", "TNF", "TNFRSF1A", "TNFRSF1B", "IL18", "IL18R1", "IL15", "IL15RA")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratM, features = selGenes, group.by= "clusterName") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
 ## BMP features
 ```{r BMP features}
 genes <- data.frame(gene=rownames(seuratM)) %>% 
