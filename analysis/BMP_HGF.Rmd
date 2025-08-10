@@ -65,7 +65,7 @@ names(coldiseaseCond) <- c("healthy", "explant", "visit1", "visit2", "visit3")
 genes <- data.frame(gene=rownames(seuratM)) %>% 
   mutate(geneID=gsub("^.*\\.", "", gene))
 
-selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4")) %>% 
+selGenes <- data.frame(geneID=c("HGF", "MET", "GREM1", "GREM2", "BMPR1A", "BMPR2", "BMP2K", "BMP8A", "BMP1", "BMP6", "BMP2", "BMP5", "BMP4", "BMPER")) %>% 
   left_join(., genes, by="geneID")
 
 pList <- sapply(selGenes$gene, function(x){
