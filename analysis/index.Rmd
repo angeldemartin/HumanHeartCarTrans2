@@ -50,6 +50,11 @@ Trajectory
 TradeSEQ
 [link](tradeseqIntFb.html)
 
+## CM high resolution
+### Subset and characterize
+CM
+[link](CMhighres.html)
+
 ## T cells high resolution
 Tcells
 [link](Tcellhighres.html)
