@@ -474,6 +474,46 @@ plotUMAP(sceSub, colour_by = "sign2") + sc +
 plotUMAP(sceSub, colour_by = "sign2", point_size = 1) + sc
 ```
 
+## BMP downstream signaling (NCR genes)
+```{r dotplot BMP downstream1, fig.width=10, fig.height=6}
+genes <- data.frame(gene=rownames(seuratCM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("SP1", "SMAD9", "SMAD5", "SMAD4", "SMAD1", "RUNX2", "PAX9", "MSX2", "MSX1", "KLF4", "ID4", "ID3", "ID2", "ID1")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratCM, features = selGenes, group.by= "RNA_snn_res.0.1") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
+## BMP downstream signaling (upreg in iPSCs after BMP stim)
+```{r dotplot BMP downstream2, fig.width=10, fig.height=6}
+genes <- data.frame(gene=rownames(seuratCM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("ID1","ID2", "ID4", "SMAD9","SMAD6", "SMAD7")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratCM, features = selGenes, group.by= "RNA_snn_res.0.1") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
+## BMP downstream signaling (NCR genes)
+```{r dotplot BMP downstream3, fig.width=10, fig.height=6}
+genes <- data.frame(gene=rownames(seuratCM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("SP1", "SMAD9", "SMAD5", "SMAD4", "SMAD1", "RUNX2", "PAX9", "MSX2", "MSX1", "KLF4", "ID4", "ID3", "ID2", "ID1")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratCM, features = selGenes, group.by= "RNA_snn_res.0.25") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
+## BMP downstream signaling (upreg in iPSCs after BMP stim)
+```{r dotplot BMP downstream4, fig.width=10, fig.height=6}
+genes <- data.frame(gene=rownames(seuratCM)) %>% 
+  mutate(geneID=gsub("^.*\\.", "", gene))
+
+selGenes <- data.frame(geneID=c("ID1","ID2", "ID4", "SMAD9","SMAD6", "SMAD7")) %>% left_join(., genes, by="geneID")
+
+DotPlot(seuratCM, features = selGenes, group.by= "RNA_snn_res.0.25") + RotatedAxis() + scale_color_viridis(option="F") + coord_flip()
+```
+
 ## session info
 ```{r date and session info}
 date()
